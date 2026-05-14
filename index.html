@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Konfigurator zestawu promocyjnego — WAGO</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%236ec800'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================
+       CSS CUSTOM PROPERTIES
+    ========================================================= */
+    :root {
+      --wago-green:   #6ec800;
+      --wago-dark:    #1f2837;
+      --wago-white:   #ffffff;
+      --gray-7:       #eff0f1;
+      --gray-15:      #dedfe1;
+      --gray-40:      #a5a8af;
+      --gray-70:      #616a73;
+      --color-positive: #6ec800;
+      --color-attention:#ffe70a;
+      --color-warning:  #bb0522;
+      --font-stack: 'AktivGrotesk', Arial, 'Open Sans', sans-serif;
+      --content-max: 860px;
+      --pad: 24px;
+      --header-h: 60px;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --transition: 150ms ease;
+    }
+
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-stack);
+      color: var(--wago-dark);
+      background: var(--gray-7);
+      min-height: 100vh;
+    }
+
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+    .container {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: calc(var(--header-h) + 24px) var(--pad) var(--pad);
+    }
+
+    .step-layout {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--wago-dark);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-inner {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .wago-logo {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .wago-logo svg {
+      height: 28px;
+      width: auto;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255,255,255,0.25);
+      flex-shrink: 0;
+    }
+
+    .header-subtitle {
+      color: var(--wago-white);
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    /* =========================================================
+       PROGRESS BAR
+    ========================================================= */
+    #progress-bar {
+      margin-bottom: 20px;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 12px 0;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 2px;
+      background: var(--gray-15);
+      margin: 0 8px;
+    }
+
+    .step--complete:not(:last-child)::after,
+    .step--active:not(:last-child)::after {
+      background: var(--wago-green);
+    }
+
+    .step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-40);
+      background: var(--wago-white);
+      flex-shrink: 0;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .step--active .step-dot,
+    .step--complete .step-dot {
+      background: var(--wago-green);
+      border-color: var(--wago-green);
+    }
+
+    .step-label {
+      font-size: 0.875rem;
+      color: var(--gray-70);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .step--active .step-label {
+      color: var(--wago-dark);
+      font-weight: 600;
+    }
+
+    .step--complete .step-label {
+      color: var(--wago-green);
+    }
+
+    /* =========================================================
+       BASE SET CARD
+    ========================================================= */
+    #base-set-card {
+      background: var(--wago-white);
+      border: 1px solid var(--gray-15);
+      border-left: 4px solid var(--wago-green);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .base-set__label {
+      font-size: 0.8125rem;
+      color: var(--gray-70);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .base-set__desc {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--wago-dark);
+    }
+
+    .base-set__price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--wago-dark);
+      white-space: nowrap;
+    }
+
+    .base-set__price-label {
+      font-size: 0.8125rem;
+      color: var(--gray-70);
+      text-align: right;
+    }
+
+    /* =========================================================
+       STEP PANELS
+    ========================================================= */
+    .step-panel {
+      min-width: 0;
+    }
+
+    .step-panel--hidden {
+      display: none !important;
+    }
+
+    .step-panel h2 {
+      font-size: 1.1875rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-description {
+      font-size: 0.875rem;
+      color: var(--gray-70);
+      margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       BADGES
+    ========================================================= */
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 2px;
+      line-height: 1.4;
+    }
+
+    .badge--discount {
+      background: var(--wago-green);
+      color: #000;
+    }
+
+    .badge--discount-light {
+      background: #f4fbea;
+      color: var(--wago-dark);
+      border: 1px solid var(--wago-green);
+    }
+
+    /* =========================================================
+       MODULE CARDS
+    ========================================================= */
+    .module-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .module-card {
+      background: var(--wago-white);
+      border: 1px solid var(--gray-15);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      cursor: pointer;
+    }
+
+    .module-card:hover {
+      border-color: var(--gray-40);
+    }
+
+    .module-card--selected {
+      border: 2px solid var(--wago-green);
+      background: #f4fbea;
+    }
+
+    .module-card--selected:hover {
+      border-color: var(--wago-green);
+    }
+
+    .module-card__label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .module-card__checkbox-wrap {
+      position: relative;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .module-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .custom-checkbox {
+      display: block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--gray-40);
+      border-radius: var(--radius-sm);
+      background: var(--wago-white);
+      transition: background var(--transition), border-color var(--transition);
+      pointer-events: none;
+    }
+
+    .module-checkbox:checked + .custom-checkbox {
+      background: var(--wago-green);
+      border-color: var(--wago-green);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%23000' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 10px 8px;
+    }
+
+    .module-checkbox:focus-visible + .custom-checkbox {
+      outline: 2px solid var(--wago-green);
+      outline-offset: 2px;
+    }
+
+    .module-card__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-card__header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .module-card__catalog {
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--wago-dark);
+    }
+
+    .module-card__desc {
+      font-size: 0.875rem;
+      color: var(--gray-70);
+    }
+
+    .module-card__prices {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .module-card__price-base {
+      font-size: 0.8125rem;
+      color: var(--gray-40);
+      text-decoration: line-through;
+    }
+
+    .module-card__price-promo {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--wago-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* =========================================================
+       QUANTITY CONTROL
+    ========================================================= */
+    .qty-control {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--gray-15);
+    }
+
+    .qty-control--hidden {
+      display: none;
+    }
+
+    .qty-label {
+      font-size: 0.8125rem;
+      color: var(--gray-70);
+      margin-right: auto;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--gray-15);
+      border-radius: var(--radius-sm);
+      background: var(--wago-white);
+      font-size: 1.125rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color var(--transition), color var(--transition);
+      font-family: var(--font-stack);
+    }
+
+    .qty-btn:hover:not(:disabled) {
+      border-color: var(--wago-green);
+      color: var(--wago-green);
+    }
+
+    .qty-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .qty-value {
+      min-width: 28px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    /* =========================================================
+       VALIDATION MESSAGE
+    ========================================================= */
+    .validation-msg {
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .validation-msg--error {
+      display: block;
+      background: #fff3f4;
+      border: 1px solid var(--color-warning);
+      color: var(--color-warning);
+    }
+
+    .validation-msg--ok {
+      display: block;
+      background: #f4fbea;
+      border: 1px solid var(--wago-green);
+      color: #3a6b00;
+    }
+
+    /* =========================================================
+       STEP ACTIONS
+    ========================================================= */
+    .step-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-15);
+    }
+
+    .step-actions--single {
+      justify-content: flex-end;
+    }
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+    .btn {
+      padding: 11px 24px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+      transition: opacity var(--transition), background var(--transition);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-stack);
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .btn--primary {
+      background: var(--wago-green);
+      color: #000000;
+    }
+
+    .btn--primary:hover:not(:disabled):not([aria-disabled="true"]) {
+      background: #5fb800;
+    }
+
+    .btn--primary:disabled,
+    .btn--primary[aria-disabled="true"] {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn--secondary {
+      background: transparent;
+      color: var(--wago-dark);
+      border: 1px solid var(--wago-dark);
+    }
+
+    .btn--secondary:hover {
+      background: var(--gray-7);
+    }
+
+    /* =========================================================
+       LIVE SUMMARY SIDEBAR
+    ========================================================= */
+    #live-summary {
+      background: var(--wago-white);
+      border: 1px solid var(--gray-15);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      position: sticky;
+      top: calc(var(--header-h) + 16px);
+      align-self: start;
+    }
+
+    .live-summary__title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--wago-green);
+      color: var(--wago-dark);
+    }
+
+    .live-summary__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.875rem;
+      padding: 5px 0;
+      color: var(--gray-70);
+      border-bottom: 1px solid var(--gray-7);
+    }
+
+    .live-summary__row strong {
+      color: var(--wago-dark);
+      font-weight: 600;
+    }
+
+    .live-summary__total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 2px solid var(--wago-dark);
+    }
+
+    .live-summary__total-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .live-summary__total-value {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--wago-dark);
+    }
+
+    .live-summary__note {
+      font-size: 0.75rem;
+      color: var(--gray-40);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    /* =========================================================
+       MOBILE SUMMARY BAR
+    ========================================================= */
+    #mobile-summary-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--wago-dark);
+      color: var(--wago-white);
+      padding: 12px var(--pad);
+      z-index: 90;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-bar__info {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.4;
+    }
+
+    .mobile-bar__price {
+      font-size: 1rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       SUMMARY TABLE (STEP 3)
+    ========================================================= */
+    .summary-table-wrap {
+      background: var(--wago-white);
+      border: 1px solid var(--gray-15);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .summary-section-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-70);
+      padding: 14px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-section-title:first-child {
+      padding-top: 0;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      font-size: 0.9rem;
+      gap: 8px;
+      border-bottom: 1px solid var(--gray-7);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-row__left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .summary-row__catalog {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .summary-row__desc {
+      color: var(--gray-70);
+      font-size: 0.875rem;
+    }
+
+    .summary-row__qty {
+      color: var(--gray-40);
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    .summary-row__price {
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: var(--gray-15);
+      margin: 8px 0;
+    }
+
+    .summary-subtotal {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      font-size: 0.875rem;
+      color: var(--gray-70);
+    }
+
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 0 0;
+      margin-top: 8px;
+      border-top: 2px solid var(--wago-dark);
+    }
+
+    .summary-total-row__label {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .summary-total-row__value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--wago-dark);
+    }
+
+    /* =========================================================
+       HUBSPOT PLACEHOLDER
+    ========================================================= */
+    .hubspot-wrapper {
+      margin-top: 8px;
+    }
+
+    .hubspot-placeholder {
+      border: 2px dashed var(--wago-green);
+      padding: 32px;
+      text-align: center;
+      color: var(--gray-70);
+      border-radius: var(--radius-md);
+      background: #f4fbea;
+    }
+
+    .hubspot-placeholder strong {
+      display: block;
+      font-size: 1rem;
+      color: var(--wago-dark);
+      margin-bottom: 8px;
+    }
+
+    .hubspot-placeholder p {
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .hubspot-placeholder code {
+      font-family: monospace;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-size: 0.8125rem;
+    }
+
+    /* =========================================================
+       UTILITY
+    ========================================================= */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       MEDIA QUERIES
+    ========================================================= */
+    @media (max-width: 600px) {
+      .container {
+        padding: calc(var(--header-h) + 16px) 16px 80px;
+      }
+
+      .step-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #live-summary {
+        display: none;
+      }
+
+      #mobile-summary-bar {
+        display: flex;
+      }
+
+      .header-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .step-label {
+        font-size: 0.8125rem;
+      }
+
+      .step-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+      }
+
+      .step-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .module-card__prices {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+
+      .summary-table-wrap {
+        padding: 16px;
+      }
+
+      .base-set__price {
+        font-size: 0.9375rem;
+      }
+    }
+
+    @media (min-width: 601px) {
+      #mobile-summary-bar {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+  <header id="site-header" role="banner">
+    <div class="header-inner">
+      <div class="wago-logo" aria-label="WAGO">
+        <svg viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <text x="0" y="28" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#ffffff" letter-spacing="2">WAGO</text>
+        </svg>
+      </div>
+      <div class="header-divider" aria-hidden="true"></div>
+      <span class="header-subtitle">Konfigurator zestawu promocyjnego</span>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       MAIN CONTENT
+  ====================================================== -->
+  <main id="main-content">
+    <div class="container">
+
+      <!-- Progress bar -->
+      <nav id="progress-bar" aria-label="Kroki konfiguracji">
+        <ol class="steps">
+          <li id="step-indicator-1" class="step step--active" aria-current="step">
+            <span class="step-dot" aria-hidden="true"></span>
+            <span class="step-label">Koszyk obowiązkowy</span>
+          </li>
+          <li id="step-indicator-2" class="step">
+            <span class="step-dot" aria-hidden="true"></span>
+            <span class="step-label">Koszyk dodatkowy</span>
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Base set card — always visible -->
+      <section id="base-set-card" aria-label="Zestaw bazowy">
+        <div>
+          <div class="base-set__label">Zestaw bazowy (w cenie każdej konfiguracji)</div>
+          <div class="base-set__desc">Sterownik 750-8001 + Moduł końcowy 750-600</div>
+        </div>
+        <div>
+          <div class="base-set__price-label">Cena zestawu</div>
+          <div class="base-set__price">1 000,00 zł</div>
+        </div>
+      </section>
+
+      <!-- Step layout: content + sidebar -->
+      <div class="step-layout">
+
+        <!-- ===== STEP 1 ===== -->
+        <section id="step-1" class="step-panel" aria-labelledby="step1-heading">
+          <h2 id="step1-heading" tabindex="-1">
+            Koszyk obowiązkowy
+            <span class="badge badge--discount">−50%</span>
+          </h2>
+          <p class="step-description">Wybierz minimum 2 różne moduły. Łączna ilość wszystkich wybranych: maksymalnie 5 szt.</p>
+
+          <div id="basket1-modules" class="module-grid" role="list" aria-label="Moduły koszyka obowiązkowego"></div>
+
+          <div id="validation-msg-1" class="validation-msg" role="alert" aria-live="assertive"></div>
+
+          <div class="step-actions step-actions--single">
+            <button id="btn-next-1" class="btn btn--primary" disabled aria-disabled="true">
+              Dalej
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ===== STEP 2 ===== -->
+        <section id="step-2" class="step-panel step-panel--hidden" aria-labelledby="step2-heading">
+          <h2 id="step2-heading" tabindex="-1">
+            Koszyk dodatkowy
+            <span class="badge badge--discount">−25%</span>
+          </h2>
+          <p class="step-description">Opcjonalne moduły uzupełniające — możesz pominąć ten etap.</p>
+
+          <div id="basket2-modules" class="module-grid" role="list" aria-label="Moduły koszyka dodatkowego"></div>
+
+          <div class="step-actions">
+            <button id="btn-back-2" class="btn btn--secondary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Wróć
+            </button>
+            <button id="btn-next-2" class="btn btn--primary">
+              Dalej
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ===== STEP 3 ===== -->
+        <section id="step-3" class="step-panel step-panel--hidden" aria-labelledby="step3-heading">
+          <h2 id="step3-heading" tabindex="-1">Podsumowanie zamówienia</h2>
+          <p class="step-description">Sprawdź konfigurację i wypełnij formularz kontaktowy.</p>
+
+          <div class="summary-table-wrap">
+            <div id="summary-table" aria-live="polite"></div>
+          </div>
+
+          <!-- =====================================================
+            HUBSPOT FORM EMBED
+            Zastąp poniższy placeholder prawdziwym kodem HubSpot:
+
+            1. Zaloguj się do HubSpot → Marketing → Formularze
+            2. Utwórz nowy formularz lub edytuj istniejący
+            3. Dodaj ukryte pola:
+                 - konfiguracja_koszyk1  (typ: single-line text)
+                 - konfiguracja_koszyk2  (typ: single-line text)
+                 - wartosc_calkowita     (typ: single-line text)
+                 - sterownik_bazowy      (typ: single-line text)
+            4. Skopiuj kod embed i wklej go w funkcji initHubspotForm()
+               zastępując wywołanie renderPlaceholder():
+
+                   hbspt.forms.create({
+                     portalId: "TWÓJ_PORTAL_ID",
+                     formId:   "TWÓJ_FORM_ID",
+                     target:   "#hubspot-form-placeholder",
+                     onFormReady: function() { fillHubspotFields(); }
+                   });
+
+            5. Dodaj do <head> skrypt HubSpot:
+               <script charset="utf-8" type="text/javascript"
+                 src="//js.hsforms.net/forms/embed/v2.js">
+               </script>
+          ====================================================== -->
+          <div class="hubspot-wrapper">
+            <div id="hubspot-form-placeholder"></div>
+          </div>
+
+          <div class="step-actions">
+            <button id="btn-back-3" class="btn btn--secondary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Wróć
+            </button>
+          </div>
+        </section>
+
+        <!-- ===== LIVE SUMMARY SIDEBAR ===== -->
+        <aside id="live-summary" aria-label="Podsumowanie na żywo" aria-live="polite">
+          <div class="live-summary__title">Twój wybór</div>
+
+          <div class="live-summary__row">
+            <span>Zestaw bazowy</span>
+            <strong>1 000,00 zł</strong>
+          </div>
+          <div class="live-summary__row">
+            <span>Unikalne moduły</span>
+            <strong id="summary-unique-count">0</strong>
+          </div>
+          <div class="live-summary__row">
+            <span>Łączna ilość</span>
+            <strong id="summary-total-qty">0 szt.</strong>
+          </div>
+          <div class="live-summary__row">
+            <span>Koszyk 1</span>
+            <strong id="summary-basket1-price">0,00 zł</strong>
+          </div>
+          <div class="live-summary__row">
+            <span>Koszyk 2</span>
+            <strong id="summary-basket2-price">0,00 zł</strong>
+          </div>
+
+          <div class="live-summary__total">
+            <span class="live-summary__total-label">Razem</span>
+            <span class="live-summary__total-value" id="summary-grand-total">1 000,00 zł</span>
+          </div>
+          <p class="live-summary__note">* Ceny netto. Zestaw bazowy wliczony w każdą konfigurację.</p>
+        </aside>
+
+      </div><!-- /step-layout -->
+    </div><!-- /container -->
+  </main>
+
+  <!-- Mobile summary bar -->
+  <div id="mobile-summary-bar" aria-live="polite" aria-label="Podsumowanie">
+    <div class="mobile-bar__info">
+      <span id="mobile-bar-modules">0 modułów</span>
+      &nbsp;·&nbsp;
+      <span id="mobile-bar-qty">0 szt.</span>
+    </div>
+    <div class="mobile-bar__price" id="mobile-bar-total">1 000,00 zł</div>
+  </div>
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+  <script>
+    'use strict';
+
+    /* =========================================================
+       DATA
+    ========================================================= */
+    const BASKET1_ITEMS = [
+      { catalog: '750-637',          desc: 'Enkoder',               base: 1415.00,  promo: 707.50   },
+      { catalog: '750-404',          desc: 'Licznik',               base: 1124.00,  promo: 562.00   },
+      { catalog: '750-632',          desc: 'Zawory',                base: 1174.00,  promo: 587.00   },
+      { catalog: '750-1632/000-100', desc: 'Zawory',                base: 1124.00,  promo: 562.00   },
+      { catalog: '750-511',          desc: 'PWM',                   base: 872.90,   promo: 436.45   },
+      { catalog: '750-670',          desc: 'Krokowe',               base: 1089.00,  promo: 544.50   },
+      { catalog: '750-671',          desc: 'Krokowe',               base: 1089.00,  promo: 544.50   },
+      { catalog: '750-672',          desc: 'Krokowe',               base: 2177.00,  promo: 1088.50  },
+      { catalog: '750-666/000-104',  desc: 'Safety',                base: 2207.00,  promo: 1103.50  },
+      { catalog: '750-667/000-104',  desc: 'Safety',                base: 2157.00,  promo: 1078.50  },
+      { catalog: '750-652',          desc: 'RS',                    base: 1480.00,  promo: 740.00   },
+    ];
+
+    const BASKET2_ITEMS = [
+      { catalog: '750-1405', desc: '16DI 24V DC',             base: 495.71,  promo: 371.78  },
+      { catalog: '750-1504', desc: '16DO 24V DC 0.5A',        base: 561.90,  promo: 421.43  },
+      { catalog: '750-496',  desc: '8 AI 0/4-20mA',           base: 1274.00, promo: 955.50  },
+      { catalog: '750-497',  desc: '8 AI 0-10V / +-10V DC',   base: 1274.00, promo: 955.50  },
+      { catalog: '750-450',  desc: '4AI, do RTD, 2,3,4-p',    base: 1219.00, promo: 914.25  },
+      { catalog: '750-564',  desc: '4 AO U/I',                base: 1365.00, promo: 1023.75 },
+    ];
+
+    const BASE_SET_PRICE = 1000.00;
+    const QTY_MAX_BASKET1 = 5;
+    const MIN_UNIQUE_BASKET1 = 2;
+
+    /* =========================================================
+       STATE
+    ========================================================= */
+    const state = {
+      currentStep: 1,
+      basket1: {},
+      basket2: {},
+    };
+
+    /* =========================================================
+       UTILITIES
+    ========================================================= */
+    function formatPLN(value) {
+      return new Intl.NumberFormat('pl-PL', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value) + ' zł';
+    }
+
+    function safeId(catalog) {
+      return catalog.replace(/[\/\.]/g, '-');
+    }
+
+    function roundCents(val) {
+      return Math.round(val * 100) / 100;
+    }
+
+    /* =========================================================
+       STATE INITIALIZATION
+    ========================================================= */
+    function initState() {
+      BASKET1_ITEMS.forEach(item => {
+        state.basket1[item.catalog] = { qty: 1, checked: false };
+      });
+      BASKET2_ITEMS.forEach(item => {
+        state.basket2[item.catalog] = { qty: 1, checked: false };
+      });
+    }
+
+    /* =========================================================
+       RENDER MODULE CARDS
+    ========================================================= */
+    function renderModuleCards(items, basketKey, containerId, discountLabel) {
+      const container = document.getElementById(containerId);
+      const html = items.map(item => {
+        const sid = safeId(item.catalog);
+        const s = state[basketKey][item.catalog];
+        const selectedClass = s.checked ? ' module-card--selected' : '';
+        const qtyHidden = s.checked ? '' : ' qty-control--hidden';
+        const totalQty1 = basketKey === 'basket1' ? getBasket1TotalQty() : 999;
+        const incDisabled = (basketKey === 'basket1' && totalQty1 >= QTY_MAX_BASKET1) ? ' disabled' : '';
+        const decDisabled = s.qty <= 1 ? ' disabled' : '';
+
+        return `
+          <div class="module-card${selectedClass}" role="listitem" data-basket="${basketKey}" data-catalog="${item.catalog}">
+            <label class="module-card__label" for="mod-${sid}">
+              <span class="module-card__checkbox-wrap">
+                <input
+                  type="checkbox"
+                  id="mod-${sid}"
+                  class="module-checkbox"
+                  data-basket="${basketKey}"
+                  data-catalog="${item.catalog}"
+                  ${s.checked ? 'checked' : ''}
+                  aria-checked="${s.checked}"
+                >
+                <span class="custom-checkbox" aria-hidden="true"></span>
+              </span>
+              <span class="module-card__info">
+                <span class="module-card__header">
+                  <span class="module-card__catalog">${item.catalog}</span>
+                  <span class="module-card__desc">— ${item.desc}</span>
+                </span>
+                <span class="module-card__prices">
+                  <span class="module-card__price-base">${formatPLN(item.base)}</span>
+                  <span class="module-card__price-promo">
+                    ${formatPLN(item.promo)}
+                    <span class="badge badge--discount">${discountLabel}</span>
+                  </span>
+                </span>
+              </span>
+            </label>
+            <div class="qty-control${qtyHidden}" role="group" aria-label="Ilość: ${item.catalog}">
+              <span class="qty-label">Ilość:</span>
+              <button
+                class="qty-btn qty-btn--dec"
+                data-basket="${basketKey}"
+                data-catalog="${item.catalog}"
+                aria-label="Zmniejsz ilość ${item.catalog}"
+                ${decDisabled}
+              >−</button>
+              <span class="qty-value" id="qty-val-${sid}" aria-live="polite">${s.qty}</span>
+              <button
+                class="qty-btn qty-btn--inc"
+                data-basket="${basketKey}"
+                data-catalog="${item.catalog}"
+                aria-label="Zwiększ ilość ${item.catalog}"
+                ${incDisabled}
+              >+</button>
+            </div>
+          </div>`;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    /* =========================================================
+       SYNC SINGLE CARD (targeted DOM update)
+    ========================================================= */
+    function syncModuleCard(basketKey, catalogId) {
+      const sid = safeId(catalogId);
+      const card = document.querySelector(`.module-card[data-catalog="${catalogId}"][data-basket="${basketKey}"]`);
+      if (!card) return;
+
+      const s = state[basketKey][catalogId];
+
+      // Toggle selected class
+      card.classList.toggle('module-card--selected', s.checked);
+
+      // Update native checkbox
+      const cb = card.querySelector('.module-checkbox');
+      if (cb) {
+        cb.checked = s.checked;
+        cb.setAttribute('aria-checked', String(s.checked));
+      }
+
+      // Show/hide qty control
+      const qtyCtrl = card.querySelector('.qty-control');
+      if (qtyCtrl) {
+        qtyCtrl.classList.toggle('qty-control--hidden', !s.checked);
+      }
+
+      // Update qty display
+      const qtyVal = document.getElementById('qty-val-' + sid);
+      if (qtyVal) qtyVal.textContent = s.qty;
+
+      // Update dec button
+      const decBtn = card.querySelector('.qty-btn--dec');
+      if (decBtn) decBtn.disabled = s.qty <= 1;
+
+      // Update ALL inc buttons in basket1 (shared cap)
+      if (basketKey === 'basket1') {
+        syncAllBasket1IncButtons();
+      } else {
+        const incBtn = card.querySelector('.qty-btn--inc');
+        if (incBtn) incBtn.disabled = false;
+      }
+    }
+
+    function syncAllBasket1IncButtons() {
+      const totalQty = getBasket1TotalQty();
+      const atCap = totalQty >= QTY_MAX_BASKET1;
+      document.querySelectorAll('#basket1-modules .qty-btn--inc').forEach(btn => {
+        btn.disabled = atCap;
+      });
+    }
+
+    function getBasket1TotalQty() {
+      return Object.values(state.basket1)
+        .filter(v => v.checked)
+        .reduce((sum, v) => sum + v.qty, 0);
+    }
+
+    /* =========================================================
+       STATE MUTATIONS
+    ========================================================= */
+    function toggleModule(basketKey, catalogId) {
+      const item = state[basketKey][catalogId];
+      item.checked = !item.checked;
+      if (!item.checked) item.qty = 1;
+
+      syncModuleCard(basketKey, catalogId);
+      renderLiveSummary();
+
+      if (basketKey === 'basket1') {
+        updateNextButton1();
+        // When unchecking in basket1, re-enable inc buttons for others
+        syncAllBasket1IncButtons();
+      }
+    }
+
+    function changeQty(basketKey, catalogId, delta) {
+      const item = state[basketKey][catalogId];
+      if (!item.checked) return;
+
+      if (basketKey === 'basket1') {
+        const totalOthers = Object.entries(state.basket1)
+          .filter(([k, v]) => k !== catalogId && v.checked)
+          .reduce((s, [, v]) => s + v.qty, 0);
+        const maxAllowed = QTY_MAX_BASKET1 - totalOthers;
+        item.qty = Math.max(1, Math.min(item.qty + delta, maxAllowed));
+      } else {
+        item.qty = Math.max(1, item.qty + delta);
+      }
+
+      syncModuleCard(basketKey, catalogId);
+      renderLiveSummary();
+      if (basketKey === 'basket1') updateNextButton1();
+    }
+
+    /* =========================================================
+       VALIDATION
+    ========================================================= */
+    function validateStep1() {
+      const checked = Object.values(state.basket1).filter(v => v.checked);
+      const uniqueCount = checked.length;
+      const totalQty = checked.reduce((s, v) => s + v.qty, 0);
+      return uniqueCount >= MIN_UNIQUE_BASKET1 && totalQty <= QTY_MAX_BASKET1;
+    }
+
+    function updateNextButton1() {
+      const btn = document.getElementById('btn-next-1');
+      const msgEl = document.getElementById('validation-msg-1');
+      const valid = validateStep1();
+
+      btn.disabled = !valid;
+      btn.setAttribute('aria-disabled', String(!valid));
+
+      const checked = Object.values(state.basket1).filter(v => v.checked);
+      const uniqueCount = checked.length;
+      const totalQty = checked.reduce((s, v) => s + v.qty, 0);
+
+      if (uniqueCount === 0) {
+        msgEl.className = 'validation-msg';
+        msgEl.textContent = '';
+      } else if (!valid) {
+        const parts = [];
+        if (uniqueCount < MIN_UNIQUE_BASKET1) parts.push(`wybrano ${uniqueCount} z wymaganych 2 różnych modułów`);
+        if (totalQty > QTY_MAX_BASKET1) parts.push(`łączna ilość ${totalQty} przekracza limit 5 szt.`);
+        msgEl.className = 'validation-msg validation-msg--error';
+        msgEl.textContent = 'Uwaga: ' + parts.join('; ') + '.';
+      } else {
+        msgEl.className = 'validation-msg validation-msg--ok';
+        msgEl.textContent = `Wymagania spełnione: ${uniqueCount} różnych modułów, łącznie ${totalQty} szt.`;
+      }
+    }
+
+    /* =========================================================
+       LIVE SUMMARY
+    ========================================================= */
+    function renderLiveSummary() {
+      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal } = computeSummary();
+
+      const uniqueCount = b1Lines.length + b2Lines.length;
+      const totalQty = [...b1Lines, ...b2Lines].reduce((s, l) => s + l.qty, 0);
+
+      document.getElementById('summary-unique-count').textContent = uniqueCount;
+      document.getElementById('summary-total-qty').textContent = totalQty + ' szt.';
+      document.getElementById('summary-basket1-price').textContent = formatPLN(basket1Total);
+      document.getElementById('summary-basket2-price').textContent = formatPLN(basket2Total);
+      document.getElementById('summary-grand-total').textContent = formatPLN(grandTotal);
+
+      // Mobile bar
+      const b1Unique = b1Lines.length;
+      const b2Unique = b2Lines.length;
+      const totalUnique = b1Unique + b2Unique;
+      document.getElementById('mobile-bar-modules').textContent =
+        totalUnique === 1 ? '1 moduł' :
+        totalUnique >= 2 && totalUnique <= 4 ? `${totalUnique} moduły` :
+        `${totalUnique} modułów`;
+      document.getElementById('mobile-bar-qty').textContent = totalQty + ' szt.';
+      document.getElementById('mobile-bar-total').textContent = formatPLN(grandTotal);
+    }
+
+    /* =========================================================
+       COMPUTE SUMMARY
+    ========================================================= */
+    function computeSummary() {
+      const b1Lines = BASKET1_ITEMS
+        .filter(item => state.basket1[item.catalog].checked)
+        .map(item => ({
+          ...item,
+          qty: state.basket1[item.catalog].qty,
+          lineTotal: roundCents(item.promo * state.basket1[item.catalog].qty),
+        }));
+
+      const b2Lines = BASKET2_ITEMS
+        .filter(item => state.basket2[item.catalog].checked)
+        .map(item => ({
+          ...item,
+          qty: state.basket2[item.catalog].qty,
+          lineTotal: roundCents(item.promo * state.basket2[item.catalog].qty),
+        }));
+
+      const basket1Total = roundCents(b1Lines.reduce((s, l) => s + l.lineTotal, 0));
+      const basket2Total = roundCents(b2Lines.reduce((s, l) => s + l.lineTotal, 0));
+      const grandTotal   = roundCents(BASE_SET_PRICE + basket1Total + basket2Total);
+
+      return { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal };
+    }
+
+    /* =========================================================
+       RENDER SUMMARY TABLE (step 3)
+    ========================================================= */
+    function renderSummaryTable() {
+      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal } = computeSummary();
+      let html = '';
+
+      // Base set
+      html += `<div class="summary-section-title">Zestaw bazowy</div>`;
+      html += `<div class="summary-row">
+        <div class="summary-row__left">
+          <span class="summary-row__catalog">750-8001</span>
+          <span class="summary-row__desc">Sterownik + Moduł końcowy 750-600</span>
+        </div>
+        <span class="summary-row__price">1&nbsp;000,00&nbsp;zł</span>
+      </div>`;
+
+      // Basket 1
+      html += `<div class="summary-divider"></div>`;
+      html += `<div class="summary-section-title">
+        Koszyk 1
+        <span class="badge badge--discount">−50%</span>
+      </div>`;
+
+      if (b1Lines.length === 0) {
+        html += `<div class="summary-row"><span style="color:var(--gray-40);font-style:italic">Brak wybranych modułów</span></div>`;
+      } else {
+        b1Lines.forEach(l => {
+          html += `<div class="summary-row">
+            <div class="summary-row__left">
+              <span class="summary-row__catalog">${l.catalog}</span>
+              <span class="summary-row__desc">${l.desc}</span>
+              <span class="summary-row__qty">× ${l.qty}</span>
+            </div>
+            <span class="summary-row__price">${formatPLN(l.lineTotal)}</span>
+          </div>`;
+        });
+        html += `<div class="summary-subtotal">
+          <span>Razem koszyk 1:</span>
+          <strong>${formatPLN(basket1Total)}</strong>
+        </div>`;
+      }
+
+      // Basket 2 (only if non-empty)
+      if (b2Lines.length > 0) {
+        html += `<div class="summary-divider"></div>`;
+        html += `<div class="summary-section-title">
+          Koszyk 2
+          <span class="badge badge--discount">−25%</span>
+        </div>`;
+        b2Lines.forEach(l => {
+          html += `<div class="summary-row">
+            <div class="summary-row__left">
+              <span class="summary-row__catalog">${l.catalog}</span>
+              <span class="summary-row__desc">${l.desc}</span>
+              <span class="summary-row__qty">× ${l.qty}</span>
+            </div>
+            <span class="summary-row__price">${formatPLN(l.lineTotal)}</span>
+          </div>`;
+        });
+        html += `<div class="summary-subtotal">
+          <span>Razem koszyk 2:</span>
+          <strong>${formatPLN(basket2Total)}</strong>
+        </div>`;
+      }
+
+      // Grand total
+      html += `<div class="summary-total-row">
+        <span class="summary-total-row__label">Łącznie (netto)</span>
+        <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
+      </div>`;
+
+      document.getElementById('summary-table').innerHTML = html;
+    }
+
+    /* =========================================================
+       HUBSPOT INTEGRATION
+    ========================================================= */
+    function fillHubspotFields() {
+      const { b1Lines, b2Lines, grandTotal } = computeSummary();
+
+      const koszyk1Str = b1Lines.map(l => `${l.catalog}×${l.qty}`).join(', ');
+      const koszyk2Str = b2Lines.map(l => `${l.catalog}×${l.qty}`).join(', ');
+
+      // Expose on window for async HubSpot onFormReady callback
+      window.__wagoConfig = {
+        konfiguracja_koszyk1: koszyk1Str,
+        konfiguracja_koszyk2: koszyk2Str,
+        wartosc_calkowita:    grandTotal.toFixed(2) + ' PLN',
+        sterownik_bazowy:     '750-8001',
+      };
+
+      // Try to fill form fields if already in DOM
+      setHubspotField('konfiguracja_koszyk1', koszyk1Str);
+      setHubspotField('konfiguracja_koszyk2', koszyk2Str);
+      setHubspotField('wartosc_calkowita',    grandTotal.toFixed(2) + ' PLN');
+      setHubspotField('sterownik_bazowy',     '750-8001');
+    }
+
+    function setHubspotField(name, value) {
+      const el = document.querySelector(`input[name="${name}"]`);
+      if (el) {
+        el.value = value;
+        el.dispatchEvent(new Event('input',  { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+
+    function initHubspotForm() {
+      const container = document.getElementById('hubspot-form-placeholder');
+
+      // -------------------------------------------------------
+      // PODMIEŃ TEN BLOK NA WŁAŚCIWY EMBED HUBSPOT:
+      //
+      //   if (window.hbspt) {
+      //     hbspt.forms.create({
+      //       portalId: "TWÓJ_PORTAL_ID",
+      //       formId:   "TWÓJ_FORM_ID",
+      //       target:   "#hubspot-form-placeholder",
+      //       onFormReady: function() { fillHubspotFields(); }
+      //     });
+      //   }
+      //   return;
+      //
+      // -------------------------------------------------------
+
+      const { grandTotal } = computeSummary();
+      container.innerHTML = `
+        <div class="hubspot-placeholder">
+          <strong>Tu zostanie osadzony formularz HubSpot</strong>
+          <p>
+            Portal ID: <code>[TWÓJ_PORTAL_ID]</code><br>
+            Form ID: <code>[TWÓJ_FORM_ID]</code>
+          </p>
+          <p style="margin-top:12px;font-size:0.8125rem;color:var(--gray-40)">
+            Wartość konfiguracji przekazana do formularza:<br>
+            <code>${grandTotal.toFixed(2)} PLN</code>
+          </p>
+        </div>`;
+    }
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+    function goToStep(n) {
+      // Hide all panels
+      [1, 2, 3].forEach(i => {
+        document.getElementById('step-' + i).classList.toggle('step-panel--hidden', i !== n);
+      });
+
+      // Update progress indicators (only 2 steps in the bar)
+      [1, 2].forEach(i => {
+        const el = document.getElementById('step-indicator-' + i);
+        el.classList.remove('step--active', 'step--complete');
+        el.removeAttribute('aria-current');
+        if (i < n) {
+          el.classList.add('step--complete');
+        } else if (i === n) {
+          el.classList.add('step--active');
+          el.setAttribute('aria-current', 'step');
+        }
+      });
+
+      state.currentStep = n;
+
+      // Step-specific actions
+      if (n === 3) {
+        renderSummaryTable();
+        fillHubspotFields();
+        initHubspotForm();
+      }
+
+      // Scroll to top, then move focus to heading
+      scrollToTop();
+      requestAnimationFrame(() => {
+        const heading = document.getElementById('step' + n + '-heading');
+        if (heading) heading.focus();
+      });
+    }
+
+    function scrollToTop() {
+      document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* =========================================================
+       EVENT LISTENERS
+    ========================================================= */
+    function attachEventListeners() {
+      // Basket 1 — checkbox change
+      document.getElementById('basket1-modules').addEventListener('change', e => {
+        const cb = e.target.closest('.module-checkbox');
+        if (cb) toggleModule(cb.dataset.basket, cb.dataset.catalog);
+      });
+
+      // Basket 1 — qty buttons
+      document.getElementById('basket1-modules').addEventListener('click', e => {
+        const btn = e.target.closest('.qty-btn');
+        if (btn && btn.dataset.catalog) {
+          const delta = btn.classList.contains('qty-btn--inc') ? 1 : -1;
+          changeQty(btn.dataset.basket, btn.dataset.catalog, delta);
+        }
+      });
+
+      // Basket 2 — checkbox change
+      document.getElementById('basket2-modules').addEventListener('change', e => {
+        const cb = e.target.closest('.module-checkbox');
+        if (cb) toggleModule(cb.dataset.basket, cb.dataset.catalog);
+      });
+
+      // Basket 2 — qty buttons
+      document.getElementById('basket2-modules').addEventListener('click', e => {
+        const btn = e.target.closest('.qty-btn');
+        if (btn && btn.dataset.catalog) {
+          const delta = btn.classList.contains('qty-btn--inc') ? 1 : -1;
+          changeQty(btn.dataset.basket, btn.dataset.catalog, delta);
+        }
+      });
+
+      // Navigation buttons
+      document.getElementById('btn-next-1').addEventListener('click', () => {
+        if (validateStep1()) goToStep(2);
+      });
+      document.getElementById('btn-back-2').addEventListener('click', () => goToStep(1));
+      document.getElementById('btn-next-2').addEventListener('click', () => goToStep(3));
+      document.getElementById('btn-back-3').addEventListener('click', () => goToStep(2));
+    }
+
+    /* =========================================================
+       INIT
+    ========================================================= */
+    document.addEventListener('DOMContentLoaded', () => {
+      initState();
+      renderModuleCards(BASKET1_ITEMS, 'basket1', 'basket1-modules', '−50%');
+      renderModuleCards(BASKET2_ITEMS, 'basket2', 'basket2-modules', '−25%');
+      renderLiveSummary();
+      updateNextButton1();
+      attachEventListeners();
+    });
+  </script>
+</body>
+</html>
