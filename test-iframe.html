@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test iframe — Konfigurator WAGO</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 24px;
+    }
+    .host-bar {
+      background: #003366;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .host-bar span { opacity: 0.7; }
+    iframe {
+      border: none;
+      display: block;
+      width: 100%;
+      height: 900px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="host-bar">
+    Symulacja strony hosta (wago.com) &nbsp;<span>— iframe poniżej ładuje konfigurator z localhost:5500</span>
+  </div>
+  <iframe
+    id="wago-konfigurator"
+    src="https://konfigurator-promocyjny.pages.dev/"
+    title="Konfigurator zestawu promocyjnego WAGO"
+    loading="lazy"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+  ></iframe>
+</body>
+</html>
