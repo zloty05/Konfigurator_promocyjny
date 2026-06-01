@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%236ec800'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=optional" rel="stylesheet">
   <style>
     /* =========================================================
        CSS CUSTOM PROPERTIES
@@ -312,6 +312,7 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 16px;
+      min-height: 360px;
     }
 
     /* Kafelek modułu — wzór BAZA: grid obrazek | info | cena+checkbox */
@@ -532,18 +533,18 @@
       padding: 10px 14px;
       border-radius: var(--radius-md);
       margin-bottom: 16px;
-      display: none;
+      visibility: hidden;
     }
 
     .validation-msg--error {
-      display: block;
+      visibility: visible;
       background: #fff3f4;
       border: 1px solid var(--color-warning);
       color: var(--color-warning);
     }
 
     .validation-msg--ok {
-      display: block;
+      visibility: visible;
       background: #f4fbea;
       border: 1px solid var(--wago-green);
       color: #3a6b00;
@@ -815,6 +816,7 @@
     ========================================================= */
     .hubspot-wrapper {
       margin-top: 8px;
+      min-height: 600px;
     }
 
     .hubspot-placeholder {
@@ -966,7 +968,7 @@
           <!-- Base set card — always visible — grid: obrazek | opis | cena -->
           <section id="base-set-card" aria-label="Zestaw bazowy">
             <div class="base-set__img-wrap">
-              <img src="2000-8634167-DE.jpg" alt="Sterownik 750-8001" class="base-set__img">
+              <img src="2000-8634167-DE.jpg" alt="Sterownik 750-8001" class="base-set__img" width="114" height="90">
             </div>
             <div class="base-set__text">
               <div class="base-set__label">Baza (w cenie kompletnej konfiguracji)</div>
@@ -1203,7 +1205,7 @@
 
             <!-- Kolumna 1: obrazek produktu -->
             <div class="module-card__img-wrap" aria-hidden="true">
-              <img src="632.jpg" alt="${item.catalog}" class="module-card__img">
+              <img src="632.jpg" alt="${item.catalog}" class="module-card__img" width="80" height="70">
             </div>
 
             <!-- Kolumna 2: informacje o produkcie -->
