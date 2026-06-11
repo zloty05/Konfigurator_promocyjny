@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=optional" rel="stylesheet">
+  <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/embed/v2.js"></script>
   <style>
     /* =========================================================
        CSS CUSTOM PROPERTIES
@@ -1030,29 +1031,15 @@
 
             <!-- =====================================================
               HUBSPOT FORM EMBED
-              Zastąp poniższy placeholder prawdziwym kodem HubSpot:
+              Formularz osadzany w initHubspotForm() (region eu1).
+              Skrypt embed jest w <head> (js-eu1.hsforms.net).
 
-              1. Zaloguj się do HubSpot → Marketing → Formularze
-              2. Utwórz nowy formularz lub edytuj istniejący
-              3. Dodaj ukryte pola:
-                   - konfiguracja_koszyk1  (typ: single-line text)
-                   - konfiguracja_koszyk2  (typ: single-line text)
-                   - wartosc_calkowita     (typ: single-line text)
-                   - sterownik_bazowy      (typ: single-line text)
-              4. Skopiuj kod embed i wklej go w funkcji initHubspotForm()
-                 zastępując wywołanie renderPlaceholder():
+              Formularz renderuje się w iframe SAME-ORIGIN. Cała konfiguracja
+              trafia do JEDNEGO pola "poem": setPoemInIframe() sięga do
+              iframe.contentDocument i wpisuje tekst zbudowany przez buildPoem()
+              (z retry, bo iframe ładuje się asynchronicznie).
 
-                     hbspt.forms.create({
-                       portalId: "TWÓJ_PORTAL_ID",
-                       formId:   "TWÓJ_FORM_ID",
-                       target:   "#hubspot-form-placeholder",
-                       onFormReady: function() { fillHubspotFields(); }
-                     });
-
-              5. Dodaj do <head> skrypt HubSpot:
-                 <script charset="utf-8" type="text/javascript"
-                   src="//js.hsforms.net/forms/embed/v2.js">
-                 </script>
+              Jeśli WAGO udostępni więcej pól, dopisz kolejne w setPoemInIframe().
             ====================================================== -->
             <div class="hubspot-wrapper">
               <div id="hubspot-form-placeholder"></div>
@@ -1529,67 +1516,78 @@
     /* =========================================================
        HUBSPOT INTEGRATION
     ========================================================= */
-    function fillHubspotFields() {
+    function buildPoem() {
       const { b1Lines, b2Lines, grandTotal } = computeSummary();
 
-      const koszyk1Str = b1Lines.map(l => `${l.catalog}×${l.qty}`).join(', ');
-      const koszyk2Str = b2Lines.map(l => `${l.catalog}×${l.qty}`).join(', ');
+      const lines = [];
+      lines.push('KONFIGURACJA WAGO');
+      lines.push('');
+      lines.push(`Baza: 750-8001 + 750-600 — ${formatPLN(BASE_SET_PRICE)}`);
+      lines.push('');
 
-      // Expose on window for async HubSpot onFormReady callback
-      window.__wagoConfig = {
-        konfiguracja_koszyk1: koszyk1Str,
-        konfiguracja_koszyk2: koszyk2Str,
-        wartosc_calkowita:    grandTotal.toFixed(2) + ' PLN',
-        sterownik_bazowy:     '750-8001',
-      };
+      lines.push('Koszyk obowiązkowy (-50%):');
+      b1Lines.forEach(l => {
+        lines.push(`  ${l.catalog} ×${l.qty} — ${formatPLN(l.lineTotal)}`);
+      });
 
-      // Try to fill form fields if already in DOM
-      setHubspotField('konfiguracja_koszyk1', koszyk1Str);
-      setHubspotField('konfiguracja_koszyk2', koszyk2Str);
-      setHubspotField('wartosc_calkowita',    grandTotal.toFixed(2) + ' PLN');
-      setHubspotField('sterownik_bazowy',     '750-8001');
-    }
-
-    function setHubspotField(name, value) {
-      const el = document.querySelector(`input[name="${name}"]`);
-      if (el) {
-        el.value = value;
-        el.dispatchEvent(new Event('input',  { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
+      if (b2Lines.length > 0) {
+        lines.push('');
+        lines.push('Koszyk opcjonalny (-25%):');
+        b2Lines.forEach(l => {
+          lines.push(`  ${l.catalog} ×${l.qty} — ${formatPLN(l.lineTotal)}`);
+        });
       }
+
+      lines.push('');
+      lines.push(`WARTOŚĆ CAŁKOWITA: ${formatPLN(grandTotal)}`);
+
+      return lines.join('\n');
     }
 
     function initHubspotForm() {
-      const container = document.getElementById('hubspot-form-placeholder');
+      if (!window.hbspt) return;
 
-      // -------------------------------------------------------
-      // PODMIEŃ TEN BLOK NA WŁAŚCIWY EMBED HUBSPOT:
-      //
-      //   if (window.hbspt) {
-      //     hbspt.forms.create({
-      //       portalId: "TWÓJ_PORTAL_ID",
-      //       formId:   "TWÓJ_FORM_ID",
-      //       target:   "#hubspot-form-placeholder",
-      //       onFormReady: function() { fillHubspotFields(); }
-      //     });
-      //   }
-      //   return;
-      //
-      // -------------------------------------------------------
+      const poemStr = buildPoem();
+      window.__wagoConfig = { poem: poemStr }; // podgląd/debug
 
-      const { grandTotal } = computeSummary();
-      container.innerHTML = `
-        <div class="hubspot-placeholder">
-          <strong>Tu zostanie osadzony formularz HubSpot</strong>
-          <p>
-            Portal ID: <code>[TWÓJ_PORTAL_ID]</code><br>
-            Form ID: <code>[TWÓJ_FORM_ID]</code>
-          </p>
-          <p style="margin-top:12px;font-size:0.8125rem;color:var(--gray-40)">
-            Wartość konfiguracji przekazana do formularza:<br>
-            <code>${grandTotal.toFixed(2)} PLN</code>
-          </p>
-        </div>`;
+      hbspt.forms.create({
+        portalId: "145269444",
+        formId:   "9e702531-565f-4d62-b800-95fb4f5cf4f2",
+        region:   "eu1",
+        target:   "#hubspot-form-placeholder",
+        // HubSpot renderuje formularz w iframe SAME-ORIGIN (src pusty), więc
+        // mamy dostęp do jego contentDocument. Pole 'poem' wypełniamy ręcznie
+        // po wyrenderowaniu — prefill przez `values` HubSpot dla tego pola
+        // ignoruje. Iframe ładuje się asynchronicznie → retry.
+        onFormReady: function () { setPoemInIframe(poemStr); }
+      });
+    }
+
+    function setPoemInIframe(value, attempt) {
+      attempt = attempt || 0;
+
+      // Znajdź iframe HubSpota (same-origin, w naszym placeholderze) i pole 'poem'.
+      const frames = document.querySelectorAll('#hubspot-form-placeholder iframe, iframe');
+      let field = null;
+      for (const f of frames) {
+        let doc;
+        try { doc = f.contentDocument; } catch (e) { continue; } // pomiń cross-origin (reCAPTCHA)
+        if (!doc) continue;
+        const el = doc.querySelector('input[name="poem"], textarea[name="poem"]');
+        if (el) { field = el; break; }
+      }
+
+      if (field) {
+        field.value = value;
+        field.dispatchEvent(new Event('input',  { bubbles: true }));
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+        return;
+      }
+
+      // Pole jeszcze nie gotowe — ponów kilka razy.
+      if (attempt < 20) {
+        setTimeout(() => setPoemInIframe(value, attempt + 1), 250);
+      }
     }
 
     /* =========================================================
@@ -1619,8 +1617,7 @@
       // Step-specific actions
       if (n === 3) {
         renderSummaryTable();
-        fillHubspotFields();
-        initHubspotForm();
+        initHubspotForm(); // buduje 'poem' i osadza formularz z prefillem
       }
 
       // Scroll to top, then move focus to heading
