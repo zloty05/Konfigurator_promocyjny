@@ -306,6 +306,98 @@
     }
 
     /* =========================================================
+       MODULE GROUPS (zwijane sekcje — basket1)
+    ========================================================= */
+    .module-group {
+      border: 1px solid var(--gray-15);
+      border-radius: var(--radius-md);
+      background: var(--wago-white);
+      overflow: hidden;
+    }
+
+    .module-group__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--wago-white);
+      border: none;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-stack);
+      text-align: left;
+      color: var(--wago-dark);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .module-group__header:hover {
+      background: var(--gray-7);
+    }
+
+    .module-group__header:focus-visible {
+      outline: 2px solid var(--wago-green);
+      outline-offset: -2px;
+    }
+
+    .module-group__chevron {
+      flex-shrink: 0;
+      color: var(--gray-70);
+      transition: transform var(--transition);
+    }
+
+    .module-group--open .module-group__chevron {
+      transform: rotate(90deg);
+    }
+
+    .module-group__title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-group__summary {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-70);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Akcent gdy grupa zawiera zaznaczone moduły (widoczny także po zwinięciu) */
+    .module-group--has-selection .module-group__header {
+      border-left-color: var(--wago-green);
+    }
+
+    .module-group--has-selection .module-group__summary {
+      color: #3a6b00;
+    }
+
+    .module-group--has-selection .module-group__summary::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--wago-green);
+      flex-shrink: 0;
+    }
+
+    .module-group__body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      border-top: 1px solid var(--gray-15);
+    }
+
+    .module-group:not(.module-group--open) .module-group__body {
+      display: none;
+    }
+
+    /* =========================================================
        MODULE CARDS
     ========================================================= */
     .module-grid {
@@ -313,7 +405,6 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 16px;
-      min-height: 360px;
     }
 
     /* Kafelek modułu — wzór BAZA: grid obrazek | info | cena+checkbox */
@@ -398,6 +489,14 @@
     .module-card__name-link:hover {
       color: var(--wago-green);
       text-decoration: underline;
+    }
+
+    /* Opis techniczny — mniejszy, niepogrubiony, między nazwą a ceną */
+    .module-card__desc {
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--gray-70);
+      line-height: 1.35;
     }
 
     .module-card__prices {
@@ -913,6 +1012,23 @@
         gap: 2px;
       }
 
+      .module-group__header {
+        padding: 12px;
+        gap: 8px;
+      }
+
+      .module-group__title {
+        font-size: 0.875rem;
+      }
+
+      .module-group__summary {
+        font-size: 0.75rem;
+      }
+
+      .module-group__body {
+        padding: 10px;
+      }
+
       .summary-table-wrap {
         padding: 16px;
       }
@@ -1106,27 +1222,42 @@
     /* =========================================================
        DATA
     ========================================================= */
+    // Dane produktowe = źródło prawdy. Ceny `promo` = ceny netto po promocji
+    // z wago_modules_2.md; `base` (przekreślona) = promo / rabat (basket1 0.5, basket2 0.75).
+    // `group` — tytuł zwijanej sekcji (tylko basket1). `name` — nazwa produktu na karcie
+    // (kolumna „Nazwa" pliku); może różnić się od `group` (np. warianty liczników w grupie „Liczniki").
     const BASKET1_ITEMS = [
-      { catalog: '750-637',          desc: 'Interfejs enkodera inkrementalnego',              base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637' },
-      { catalog: '750-404',          desc: 'Licznik góra/dół',                                base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404' },
-      { catalog: '750-632',          desc: 'Moduł do zaworów proporcjonalnych',               base: 1174.00,  promo: 587.00,  url: 'https://www.wago.com/pl/systemy-i-o/modu%C5%82-do%C2%A0zawor%C3%B3w-proporcjonalnych/p/750-632' },
-      { catalog: '750-1632/000-100', desc: 'Moduł do zaworów proporcjonalnych (2-,3-,4-przew.)', base: 1124.00, promo: 562.00, url: 'https://www.wago.com/pl/systemy-i-o/modu%C5%82-do-zawor%C3%B3w-proporcjonalnych/p/750-1632_000-100' },
-      { catalog: '750-511',          desc: 'Moduł PWM',                                       base: 872.90,   promo: 436.45,  url: 'https://www.wago.com/pl/systemy-i-o/2-wyjscia-szerokosci-impulsu/p/750-511' },
-      { catalog: '750-670',          desc: 'Sterownik krokowy 20mA',                          base: 1089.00,  promo: 544.50,  url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-670' },
-      { catalog: '750-671',          desc: 'Sterownik krokowy 1,5A',                          base: 1089.00,  promo: 544.50,  url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-671' },
-      { catalog: '750-672',          desc: 'Sterownik krokowy 7,5A',                          base: 2177.00,  promo: 1088.50, url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-672' },
-      { catalog: '750-666/000-104',  desc: 'Moduł Safety 4/2-kan. DI/DO; PROFIsafe',          base: 2207.00,  promo: 1103.50, url: 'https://www.wago.com/pl/systemy-i-o/bezpieczny-modul-we-wy-cyfrowego/p/750-666_000-104' },
-      { catalog: '750-667/000-104',  desc: 'Moduł Safety 4/4-kan. DI/DO; PROFIsafe',          base: 2157.00,  promo: 1078.50, url: 'https://www.wago.com/pl/systemy-i-o/bezpieczny-modul-we-wy-cyfrowego/p/750-667_000-104' },
-      { catalog: '750-652',          desc: 'Moduł interfejsu RS-232/-485',                       base: 1480.00,  promo: 740.00,  url: 'https://www.wago.com/pl/systemy-i-o/modu%C5%82-interfejsu-rs-232-485/p/750-652' },
+      { catalog: '750-631/000-004', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '5V / 422 / diff / 16b / 1000kHz',     base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-631_000-004' },
+      { catalog: '750-631/000-010', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '5..24V / uni / 16b / 1000kHz',        base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-631_000-010' },
+      { catalog: '750-631/000-011', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '5..24V / uni / 16b / 1000kHz',        base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-631_000-011' },
+      { catalog: '750-637',         group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '5V / dif / 32b / 250kHz',             base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637' },
+      { catalog: '750-637/000-001', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '24V / dif / 32b / 250kHz',            base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637_000-001' },
+      { catalog: '750-637/000-002', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '24V / se / 32b / 250kHz',             base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637_000-002' },
+      { catalog: '750-637/000-003', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '5V / dif / 32b / 250kHz',             base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637_000-003' },
+      { catalog: '750-637/000-004', group: 'Moduł enkodera inkrementalnego',     name: 'Moduł enkodera inkrementalnego',     desc: '24V / se / 32b / 250kHz',             base: 1415.00,  promo: 707.50,  url: 'https://www.wago.com/pl/systemy-i-o/interfejs-enkodera-inkrementalnego/p/750-637_000-004' },
+      { catalog: '750-404',         group: 'Liczniki', name: 'Licznik góra/dół',        desc: '24V, góra/dół, 100kHz',               base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404' },
+      { catalog: '750-404/000-001', group: 'Liczniki', name: 'Licznik góra',            desc: '24V, góra, bramkowany',               base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404_000-001' },
+      { catalog: '750-404/000-003', group: 'Liczniki', name: 'Licznik częstotliwości',  desc: '0,1–100kHz',                          base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404_000-003' },
+      { catalog: '750-404/000-004', group: 'Liczniki', name: 'Licznik góra/dół',        desc: 'góra/dół, z wyjściem cyfrowym',       base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404_000-004' },
+      { catalog: '750-404/000-005', group: 'Liczniki', name: 'Licznik góra',            desc: '2x góra, 16bit',                      base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-404_000-005' },
+      { catalog: '750-638',         group: 'Liczniki', name: 'Licznik góra/dół',        desc: '24V, 2x góra/dół, 16bit, 500Hz',      base: 552.00,   promo: 276.00,  url: 'https://www.wago.com/pl/systemy-i-o/licznik-rewersyjny/p/750-638' },
+      { catalog: '750-670',         group: 'Moduł sterowania silnikami krokowymi', name: 'Moduł sterowania silnikami krokowymi', desc: 'RS-422/24 V DC; 20 mA',             base: 1089.00,  promo: 544.50,  url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-670' },
+      { catalog: '750-671',         group: 'Moduł sterowania silnikami krokowymi', name: 'Moduł sterowania silnikami krokowymi', desc: '24 V DC; 1,5 A',                    base: 1089.00,  promo: 544.50,  url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-671' },
+      { catalog: '750-672',         group: 'Moduł sterowania silnikami krokowymi', name: 'Moduł sterowania silnikami krokowymi', desc: '70 V DC; 7,5 A',                    base: 2177.00,  promo: 1088.50, url: 'https://www.wago.com/pl/systemy-i-o/sterownik-krokowy/p/750-672' },
+      { catalog: '750-511',         group: 'Moduł PWM',                          name: 'Moduł PWM',                          desc: '2 wyjścia z regul. szerokości impulsu (PWM)', base: 872.90, promo: 436.45, url: 'https://www.wago.com/pl/systemy-i-o/2-wyjscia-szerokosci-impulsu/p/750-511' },
+      { catalog: '750-1632/000-100', group: 'Moduł do zaworów proporcjonalnych', name: 'Moduł do zaworów proporcjonalnych', desc: 'podłączanie 2-, 3-, 4-przewodowe',    base: 1124.00,  promo: 562.00,  url: 'https://www.wago.com/pl/systemy-i-o/modu%C5%82-do-zawor%C3%B3w-proporcjonalnych/p/750-1632_000-100' },
+      { catalog: '750-666/000-104', group: 'Moduł Safety',                       name: 'Moduł Safety',                       desc: '4FDI/2FDO; PROFIsafe; logika',        base: 2207.00,  promo: 1103.50, url: 'https://www.wago.com/pl/systemy-i-o/bezpieczny-modul-we-wy-cyfrowego/p/750-666_000-104' },
+      { catalog: '750-667/000-104', group: 'Moduł Safety',                       name: 'Moduł Safety',                       desc: '4FDI/4FDO; PROFIsafe; logika',        base: 2157.00,  promo: 1078.50, url: 'https://www.wago.com/pl/systemy-i-o/bezpieczny-modul-we-wy-cyfrowego/p/750-667_000-104' },
+      { catalog: '750-1652',        group: 'Moduł interfejsu RS-232/-485',       name: 'Moduł interfejsu RS-232/-485',       desc: 'RS-232/RS-485',                       base: 1480.00,  promo: 740.00,  url: 'https://www.wago.com/pl/systemy-i-o/modu%C5%82-interfejsu-rs-232-485/p/750-1652' },
     ];
 
     const BASKET2_ITEMS = [
-      { catalog: '750-1405', desc: '16 DI 24V DC',                        base: 495.71,  promo: 371.78,  url: 'https://www.wago.com/pl/systemy-i-o/16-kanalowe-wejscie-dwustanowe/p/750-1405' },
-      { catalog: '750-1504', desc: '16 DO 24V DC 0,5 A',                  base: 561.90,  promo: 421.43,  url: 'https://www.wago.com/pl/systemy-i-o/16-kanalowe-wyjscie-dwustanowe/p/750-1504' },
-      { catalog: '750-496',  desc: '8 AI 0/4–20mA',                       base: 1274.00, promo: 955.50,  url: 'https://www.wago.com/pl/systemy-i-o/8-kanalowe-wejscie-analogowe/p/750-496' },
-      { catalog: '750-497',  desc: '8 AI 0–10V / ±10V DC',                base: 1274.00, promo: 955.50,  url: 'https://www.wago.com/pl/systemy-i-o/8-kanalowe-wejscie-analogowe/p/750-497' },
-      { catalog: '750-450',  desc: '4 AI do RTD, 2,3,4-przewodowy',       base: 1219.00, promo: 914.25,  url: 'https://www.wago.com/pl/systemy-i-o/4-kanalowe-wejscie-analogowe/p/750-450' },
-      { catalog: '750-564',  desc: '4 AO konfigurowalne napięciowe/prądowe', base: 1365.00, promo: 1023.75, url: 'https://www.wago.com/pl/systemy-i-o/wyjscie-analogowe/p/750-564' },
+      { catalog: '750-1405', name: 'Moduł wejść dwustanowych',  desc: '16 DI 24V DC',                          base: 495.71,  promo: 371.78,  url: 'https://www.wago.com/pl/systemy-i-o/16-kanalowe-wejscie-dwustanowe/p/750-1405' },
+      { catalog: '750-1504', name: 'Moduł wyjść dwustanowych',  desc: '16 DO 24V DC 0,5A',                     base: 561.91,  promo: 421.43,  url: 'https://www.wago.com/pl/systemy-i-o/16-kanalowe-wyjscie-dwustanowe/p/750-1504' },
+      { catalog: '750-450',  name: 'Moduł wejść analogowych',   desc: '4 AI do RTD, 2-, 3-, 4-przewodowe',     base: 1219.00, promo: 914.25,  url: 'https://www.wago.com/pl/systemy-i-o/4-kanalowe-wejscie-analogowe/p/750-450' },
+      { catalog: '750-496',  name: 'Moduł wejść analogowych',   desc: '8 AI 0/4–20mA',                         base: 1274.00, promo: 955.50,  url: 'https://www.wago.com/pl/systemy-i-o/8-kanalowe-wejscie-analogowe/p/750-496' },
+      { catalog: '750-497',  name: 'Moduł wejść analogowych',   desc: '8 AI 0–10V / ±10V DC',                  base: 1274.00, promo: 955.50,  url: 'https://www.wago.com/pl/systemy-i-o/8-kanalowe-wejscie-analogowe/p/750-497' },
+      { catalog: '750-564',  name: 'Moduł wyjść analogowych',   desc: '4 AO konfigurowalne napięciowe/prądowe (U/I)', base: 1365.00, promo: 1023.75, url: 'https://www.wago.com/pl/systemy-i-o/wyjscie-analogowe/p/750-564' },
     ];
 
     const BASE_SET_PRICE = 1000.00;
@@ -1140,6 +1271,7 @@
       currentStep: 1,
       basket1: {},
       basket2: {},
+      basket1Groups: {},
     };
 
     /* =========================================================
@@ -1170,85 +1302,137 @@
       BASKET2_ITEMS.forEach(item => {
         state.basket2[item.catalog] = { qty: 1, checked: false };
       });
+
+      // Stan zwijania grup basket1 — wszystkie zwinięte na starcie.
+      state.basket1Groups = {};
+      BASKET1_ITEMS.forEach(item => {
+        const g = item.group || 'Pozostałe';
+        if (!(g in state.basket1Groups)) {
+          state.basket1Groups[g] = false;
+        }
+      });
     }
 
     /* =========================================================
        RENDER MODULE CARDS
     ========================================================= */
+    // Buduje HTML pojedynczego kafelka modułu.
+    function buildCardHTML(item, basketKey, discountLabel) {
+      const sid = safeId(item.catalog);
+      const s = state[basketKey][item.catalog];
+      const selectedClass = s.checked ? ' module-card--selected' : '';
+      const qtyHidden = s.checked ? '' : ' qty-control--hidden';
+      const totalQty1 = basketKey === 'basket1' ? getBasket1TotalQty() : 999;
+      const incDisabled = (basketKey === 'basket1' && totalQty1 >= QTY_MAX_BASKET1) ? ' disabled' : '';
+      const decDisabled = s.qty <= 1 ? ' disabled' : '';
+      const productUrl = item.url || '#';
+      const title = item.name || item.group || item.desc;
+
+      return `
+        <div class="module-card${selectedClass}" role="listitem" data-basket="${basketKey}" data-catalog="${item.catalog}">
+
+          <!-- Kolumna 1: obrazek produktu -->
+          <div class="module-card__img-wrap" aria-hidden="true">
+            <img src="632.jpg" alt="${item.catalog}" class="module-card__img" width="80" height="70">
+          </div>
+
+          <!-- Kolumna 2: informacje o produkcie -->
+          <div class="module-card__body">
+            <span class="module-card__catalog">${item.catalog}</span>
+            <a
+              href="${productUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="module-card__name-link"
+              tabindex="0"
+              onclick="event.stopPropagation()"
+            >${title}</a>
+            <span class="module-card__desc">${item.desc}</span>
+            <div class="module-card__prices">
+              <span class="module-card__price-base">${formatPLN(item.base)}</span>
+              <span class="module-card__price-promo">
+                ${formatPLN(item.promo)}
+                <span class="badge badge--discount">${discountLabel}</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Kolumna 3: checkbox + kontrolki ilości -->
+          <div class="module-card__side">
+            <label class="module-card__checkbox-wrap" for="mod-${sid}" aria-label="Wybierz ${item.catalog}">
+              <input
+                type="checkbox"
+                id="mod-${sid}"
+                class="module-checkbox"
+                data-basket="${basketKey}"
+                data-catalog="${item.catalog}"
+                ${s.checked ? 'checked' : ''}
+                aria-checked="${s.checked}"
+              >
+              <span class="custom-checkbox" aria-hidden="true"></span>
+            </label>
+            <div class="qty-control${qtyHidden}" role="group" aria-label="Ilość: ${item.catalog}">
+              <button
+                class="qty-btn qty-btn--dec"
+                data-basket="${basketKey}"
+                data-catalog="${item.catalog}"
+                aria-label="Zmniejsz ilość ${item.catalog}"
+                ${decDisabled}
+              >−</button>
+              <span class="qty-value" id="qty-val-${sid}" aria-live="polite">${s.qty}</span>
+              <button
+                class="qty-btn qty-btn--inc"
+                data-basket="${basketKey}"
+                data-catalog="${item.catalog}"
+                aria-label="Zwiększ ilość ${item.catalog}"
+                ${incDisabled}
+              >+</button>
+            </div>
+          </div>
+
+        </div>`;
+    }
+
+    // Płaska lista kafelków (basket2).
     function renderModuleCards(items, basketKey, containerId, discountLabel) {
       const container = document.getElementById(containerId);
-      const html = items.map(item => {
-        const sid = safeId(item.catalog);
-        const s = state[basketKey][item.catalog];
-        const selectedClass = s.checked ? ' module-card--selected' : '';
-        const qtyHidden = s.checked ? '' : ' qty-control--hidden';
-        const totalQty1 = basketKey === 'basket1' ? getBasket1TotalQty() : 999;
-        const incDisabled = (basketKey === 'basket1' && totalQty1 >= QTY_MAX_BASKET1) ? ' disabled' : '';
-        const decDisabled = s.qty <= 1 ? ' disabled' : '';
-        const productUrl = item.url || '#';
+      container.innerHTML = items.map(item => buildCardHTML(item, basketKey, discountLabel)).join('');
+    }
+
+    // Lista pogrupowana w zwijane sekcje wg item.group (basket1).
+    function renderGroupedCards(items, basketKey, containerId, discountLabel) {
+      const container = document.getElementById(containerId);
+
+      // Grupowanie z zachowaniem kolejności wystąpień.
+      const order = [];
+      const groups = {};
+      items.forEach(item => {
+        const g = item.group || 'Pozostałe';
+        if (!groups[g]) { groups[g] = []; order.push(g); }
+        groups[g].push(item);
+      });
+
+      const html = order.map((groupName, idx) => {
+        const open = state[basketKey + 'Groups'][groupName];
+        const gid = 'group-' + safeId(basketKey + '-' + groupName.replace(/\s+/g, '-'));
+        const cards = groups[groupName].map(item => buildCardHTML(item, basketKey, discountLabel)).join('');
 
         return `
-          <div class="module-card${selectedClass}" role="listitem" data-basket="${basketKey}" data-catalog="${item.catalog}">
-
-            <!-- Kolumna 1: obrazek produktu -->
-            <div class="module-card__img-wrap" aria-hidden="true">
-              <img src="632.jpg" alt="${item.catalog}" class="module-card__img" width="80" height="70">
+          <section class="module-group${open ? ' module-group--open' : ''}" data-group="${groupName}">
+            <button
+              type="button"
+              class="module-group__header"
+              aria-expanded="${open}"
+              aria-controls="${gid}"
+            >
+              <svg class="module-group__chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="module-group__title">${groupName}</span>
+              <span class="module-group__summary" aria-live="polite"></span>
+            </button>
+            <div class="module-group__body" id="${gid}" role="list" aria-label="${groupName}">
+              ${cards}
             </div>
-
-            <!-- Kolumna 2: informacje o produkcie -->
-            <div class="module-card__body">
-              <span class="module-card__catalog">${item.catalog}</span>
-              <a
-                href="${productUrl}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="module-card__name-link"
-                tabindex="0"
-                onclick="event.stopPropagation()"
-              >${item.desc}</a>
-              <div class="module-card__prices">
-                <span class="module-card__price-base">${formatPLN(item.base)}</span>
-                <span class="module-card__price-promo">
-                  ${formatPLN(item.promo)}
-                  <span class="badge badge--discount">${discountLabel}</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Kolumna 3: checkbox + kontrolki ilości -->
-            <div class="module-card__side">
-              <label class="module-card__checkbox-wrap" for="mod-${sid}" aria-label="Wybierz ${item.catalog}">
-                <input
-                  type="checkbox"
-                  id="mod-${sid}"
-                  class="module-checkbox"
-                  data-basket="${basketKey}"
-                  data-catalog="${item.catalog}"
-                  ${s.checked ? 'checked' : ''}
-                  aria-checked="${s.checked}"
-                >
-                <span class="custom-checkbox" aria-hidden="true"></span>
-              </label>
-              <div class="qty-control${qtyHidden}" role="group" aria-label="Ilość: ${item.catalog}">
-                <button
-                  class="qty-btn qty-btn--dec"
-                  data-basket="${basketKey}"
-                  data-catalog="${item.catalog}"
-                  aria-label="Zmniejsz ilość ${item.catalog}"
-                  ${decDisabled}
-                >−</button>
-                <span class="qty-value" id="qty-val-${sid}" aria-live="polite">${s.qty}</span>
-                <button
-                  class="qty-btn qty-btn--inc"
-                  data-basket="${basketKey}"
-                  data-catalog="${item.catalog}"
-                  aria-label="Zwiększ ilość ${item.catalog}"
-                  ${incDisabled}
-                >+</button>
-              </div>
-            </div>
-
-          </div>`;
+          </section>`;
       }).join('');
 
       container.innerHTML = html;
@@ -1312,6 +1496,51 @@
     }
 
     /* =========================================================
+       GROUP COLLAPSE + SUMMARY (basket1)
+    ========================================================= */
+    // Przełącza zwinięcie/rozwinięcie sekcji grupy.
+    function toggleGroup(groupName) {
+      const open = !state.basket1Groups[groupName];
+      state.basket1Groups[groupName] = open;
+
+      const section = document.querySelector(`.module-group[data-group="${groupName}"]`);
+      if (!section) return;
+      section.classList.toggle('module-group--open', open);
+      const header = section.querySelector('.module-group__header');
+      if (header) header.setAttribute('aria-expanded', String(open));
+    }
+
+    // Aktualizuje podsumowanie (liczba wybranych + kwota) w nagłówkach grup.
+    function updateGroupSummaries() {
+      document.querySelectorAll('#basket1-modules .module-group').forEach(section => {
+        const groupName = section.dataset.group;
+        const items = BASKET1_ITEMS.filter(it => (it.group || 'Pozostałe') === groupName);
+
+        let count = 0;
+        let total = 0;
+        items.forEach(it => {
+          const s = state.basket1[it.catalog];
+          if (s && s.checked) {
+            count++;
+            total = roundCents(total + it.promo * s.qty);
+          }
+        });
+
+        const hasSel = count > 0;
+        section.classList.toggle('module-group--has-selection', hasSel);
+
+        const summaryEl = section.querySelector('.module-group__summary');
+        if (!summaryEl) return;
+        if (hasSel) {
+          const noun = count === 1 ? 'wybrany' : 'wybrane';
+          summaryEl.textContent = `${count} ${noun} · ${formatPLN(total)}`;
+        } else {
+          summaryEl.textContent = '';
+        }
+      });
+    }
+
+    /* =========================================================
        STATE MUTATIONS
     ========================================================= */
     function toggleModule(basketKey, catalogId) {
@@ -1326,6 +1555,7 @@
         updateNextButton1();
         // When unchecking in basket1, re-enable inc buttons for others
         syncAllBasket1IncButtons();
+        updateGroupSummaries();
       }
     }
 
@@ -1345,7 +1575,10 @@
 
       syncModuleCard(basketKey, catalogId);
       renderLiveSummary();
-      if (basketKey === 'basket1') updateNextButton1();
+      if (basketKey === 'basket1') {
+        updateNextButton1();
+        updateGroupSummaries();
+      }
     }
 
     /* =========================================================
@@ -1644,6 +1877,12 @@
 
       // Basket 1 — qty buttons + card click → toggle checkbox
       document.getElementById('basket1-modules').addEventListener('click', e => {
+        const groupHeader = e.target.closest('.module-group__header');
+        if (groupHeader) {
+          const section = groupHeader.closest('.module-group');
+          if (section) toggleGroup(section.dataset.group);
+          return;
+        }
         const btn = e.target.closest('.qty-btn');
         if (btn && btn.dataset.catalog) {
           const delta = btn.classList.contains('qty-btn--inc') ? 1 : -1;
@@ -1696,10 +1935,11 @@
     ========================================================= */
     document.addEventListener('DOMContentLoaded', () => {
       initState();
-      renderModuleCards(BASKET1_ITEMS, 'basket1', 'basket1-modules', '−50%');
+      renderGroupedCards(BASKET1_ITEMS, 'basket1', 'basket1-modules', '−50%');
       renderModuleCards(BASKET2_ITEMS, 'basket2', 'basket2-modules', '−25%');
       renderLiveSummary();
       updateNextButton1();
+      updateGroupSummaries();
       attachEventListeners();
     });
   </script>
