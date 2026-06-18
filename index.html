@@ -768,6 +768,33 @@
       color: var(--wago-dark);
     }
 
+    .live-summary__total-prices {
+      text-align: right;
+    }
+
+    .live-summary__base-old {
+      display: block;
+      font-size: 0.8125rem;
+      color: var(--gray-40);
+      text-decoration: line-through;
+    }
+
+    .live-summary__savings {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--wago-green);
+    }
+
+    .live-summary__savings strong {
+      color: var(--wago-green);
+      font-weight: 700;
+    }
+
     .live-summary__note {
       font-size: 0.75rem;
       color: var(--gray-40);
@@ -909,6 +936,40 @@
       font-size: 1.25rem;
       font-weight: 700;
       color: var(--wago-dark);
+    }
+
+    /* Wariant C — przekreślona cena katalogowa + oszczędność */
+    .summary-total-row--c {
+      display: block;
+    }
+
+    .summary-total-row--c .summary-total-row__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .summary-total-row__prices {
+      text-align: right;
+    }
+
+    .stc-old {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--gray-40);
+      text-decoration: line-through;
+    }
+
+    .stc-savings {
+      margin-top: 8px;
+      text-align: right;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--wago-green);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
     }
 
     /* =========================================================
@@ -1194,7 +1255,13 @@
 
           <div class="live-summary__total">
             <span class="live-summary__total-label">Razem</span>
-            <span class="live-summary__total-value" id="summary-grand-total">1 000,00 zł</span>
+            <span class="live-summary__total-prices">
+              <span class="live-summary__base-old" id="summary-base-total" hidden></span>
+              <span class="live-summary__total-value" id="summary-grand-total">1 000,00 zł</span>
+            </span>
+          </div>
+          <div class="live-summary__savings" id="summary-savings" hidden>
+            Oszczędzasz <strong id="summary-savings-value">0,00 zł</strong>
           </div>
           <p class="live-summary__note">* Ceny netto. Zestaw bazowy wliczony w każdą konfigurację.</p>
         </aside>
@@ -1622,7 +1689,7 @@
        LIVE SUMMARY
     ========================================================= */
     function renderLiveSummary() {
-      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal } = computeSummary();
+      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal, totalSavings, baseTotal } = computeSummary();
 
       const uniqueCount = b1Lines.length + b2Lines.length;
       const totalQty = [...b1Lines, ...b2Lines].reduce((s, l) => s + l.qty, 0);
@@ -1631,6 +1698,19 @@
       document.getElementById('summary-basket1-price').textContent = formatPLN(basket1Total);
       document.getElementById('summary-basket2-price').textContent = formatPLN(basket2Total);
       document.getElementById('summary-grand-total').textContent = formatPLN(grandTotal);
+
+      // Oszczędność (wariant C): przekreślona cena katalogowa + kwota i procent rabatu.
+      const savingsRow  = document.getElementById('summary-savings');
+      const baseOldEl   = document.getElementById('summary-base-total');
+      if (totalSavings > 0) {
+        baseOldEl.textContent = formatPLN(baseTotal);
+        baseOldEl.hidden = false;
+        document.getElementById('summary-savings-value').textContent = formatPLN(totalSavings);
+        savingsRow.hidden = false;
+      } else {
+        baseOldEl.hidden = true;
+        savingsRow.hidden = true;
+      }
 
       // Mobile bar
       const b1Unique = b1Lines.length;
@@ -1668,14 +1748,21 @@
       const basket2Total = roundCents(b2Lines.reduce((s, l) => s + l.lineTotal, 0));
       const grandTotal   = roundCents(BASE_SET_PRICE + basket1Total + basket2Total);
 
-      return { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal };
+      // Oszczędność = suma rabatów (cena katalogowa − promocyjna) po obu koszykach.
+      // Zestaw bazowy nie ma rabatu, więc nie wpływa na oszczędność.
+      const totalSavings = roundCents(
+        [...b1Lines, ...b2Lines].reduce((s, l) => s + (l.base - l.promo) * l.qty, 0)
+      );
+      const baseTotal = roundCents(grandTotal + totalSavings); // cena „przed rabatem"
+
+      return { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal, totalSavings, baseTotal };
     }
 
     /* =========================================================
        RENDER SUMMARY TABLE (step 3)
     ========================================================= */
     function renderSummaryTable() {
-      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal } = computeSummary();
+      const { b1Lines, b2Lines, basket1Total, basket2Total, grandTotal, totalSavings, baseTotal } = computeSummary();
       let html = '';
 
       // Base set
@@ -1737,11 +1824,26 @@
         </div>`;
       }
 
-      // Grand total
-      html += `<div class="summary-total-row">
-        <span class="summary-total-row__label">Łącznie (netto)</span>
-        <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
-      </div>`;
+      // Grand total — wariant C: przekreślona cena katalogowa + oszczędność, gdy są rabaty
+      if (totalSavings > 0) {
+        html += `<div class="summary-total-row summary-total-row--c">
+          <div class="summary-total-row__head">
+            <span class="summary-total-row__label">Łącznie (netto)</span>
+            <span class="summary-total-row__prices">
+              <span class="stc-old">${formatPLN(baseTotal)}</span>
+              <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
+            </span>
+          </div>
+          <div class="stc-savings">
+            Oszczędzasz ${formatPLN(totalSavings)}
+          </div>
+        </div>`;
+      } else {
+        html += `<div class="summary-total-row">
+          <span class="summary-total-row__label">Łącznie (netto)</span>
+          <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
+        </div>`;
+      }
 
       document.getElementById('summary-table').innerHTML = html;
     }
