@@ -99,13 +99,21 @@ WARTOŚĆ CAŁKOWITA: 2 977,00 zł
 
 Formularz renderuje się w **iframe same-origin** (jego `src` jest pusty, więc mamy dostęp do `contentDocument`). Prefill przez `values` HubSpot dla pola `poem` ignoruje. `buildPoem()` składa string z `computeSummary()`, a `setPoemInIframe()` (wołane z `onFormReady`) odnajduje iframe HubSpota, sięga do `contentDocument`, wpisuje wartość do `input/textarea[name="poem"]` i wyzwala eventy `input`/`change`. Ma retry (do 20× co 250 ms), bo iframe ładuje się asynchronicznie. Jeśli WAGO udostępni więcej pól — dopisać je w `setPoemInIframe()`.
 
+## Status: warunkowy wyjątek HQ
+
+Centrala WAGO (HQ) zgodziła się na formularz HubSpot na zewnętrznej domenie **wyłącznie jako tymczasowy wyjątek** (2026-06-23) — pełna odpowiedzialność i compliance po stronie lokalnej organizacji. Zmiany techniczne wynikające z tych warunków (lazy-load skryptu HubSpot, `frame-ancestors`) są już wdrożone w kodzie. Część warunków jest organizacyjna (uzgodnienia z IT/Legal/DPO, RoPA, obsługa incydentów) i jest prowadzona poza repo. Szczegóły i kontekst: plan `bior-c-pod-uwag-thanks-zazzy-salamander.md`.
+
 ## CSP i iframe
 
-Plik `_headers` kontroluje nagłówki Cloudflare Pages. Obecnie brak `frame-ancestors` — każda domena może osadzić konfigurator. Po potwierdzeniu wdrożenia przez WAGO przywrócić:
+Plik `_headers` kontroluje nagłówki Cloudflare Pages. `frame-ancestors` jest **wdrożone** — konfigurator może być osadzany tylko przez `wago.com` i subdomeny (produkcyjnie: `https://www.wago.com/pl/zestawy-bc100/konfigurator-zestawu-bc100`):
 
 ```
 Content-Security-Policy: frame-ancestors 'self' https://wago.com https://*.wago.com
 ```
+
+CSP zawiera **tylko** `frame-ancestors` (whitelisting domeny osadzającej) — celowo bez `script-src`/`frame-src`, bo HubSpot + reCAPTCHA ładują wiele domen i restrykcyjny CSP zasobów zepsułby formularz. `_headers` działa dopiero po wdrożeniu na Cloudflare Pages (lokalnie ignorowany).
+
+Skrypt embedu HubSpot **nie jest w `<head>`** — `initHubspotForm()` ładuje go lazy dopiero przy wejściu na krok 3 (`loadHubspotScript()`, idempotentne, flaga `hubspotFormRendered`), żeby tracking/cookie HubSpot nie startował na krokach 1–2.
 
 Kod iframe dla WAGO:
 ```html

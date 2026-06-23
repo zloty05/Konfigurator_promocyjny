@@ -9,7 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=optional" rel="stylesheet">
-  <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/embed/v2.js"></script>
+  <!-- Skrypt embedu HubSpot NIE jest ładowany tutaj — celowo. Ładuje go dopiero
+       initHubspotForm() przy wejściu na krok 3 (lazy-load), żeby żaden zasób ani
+       tracking/cookie HubSpot nie startował na krokach 1–2 bez interakcji usera. -->
   <style>
     /* =========================================================
        CSS CUSTOM PROPERTIES
@@ -1154,7 +1156,8 @@
             <!-- =====================================================
               HUBSPOT FORM EMBED
               Formularz osadzany w initHubspotForm() (region eu1).
-              Skrypt embed jest w <head> (js-eu1.hsforms.net).
+              Skrypt embed (js-eu1.hsforms.net) jest ładowany lazy w initHubspotForm()
+              dopiero przy wejściu na ten krok — NIE w <head>.
 
               Formularz renderuje się w iframe SAME-ORIGIN. Cała konfiguracja
               trafia do JEDNEGO pola "poem": setPoemInIframe() sięga do
@@ -1824,22 +1827,52 @@
       return lines.join('\n');
     }
 
+    // URL skryptu embedu HubSpot (region eu1). Ładowany lazy — patrz initHubspotForm().
+    const HUBSPOT_EMBED_SRC = 'https://js-eu1.hsforms.net/forms/embed/v2.js';
+    let hubspotFormRendered = false; // chroni przed dublowaniem formularza (Wróć→Dalej)
+
+    // Wstrzykuje skrypt HubSpota na żądanie i woła callback gdy window.hbspt gotowe.
+    // Idempotentne: jeśli skrypt już w DOM/załadowany, nie wstrzykuje go ponownie.
+    function loadHubspotScript(callback) {
+      if (window.hbspt) { callback(); return; }
+
+      const existing = document.querySelector('script[data-hubspot-embed]');
+      if (existing) {
+        // Skrypt już się wstrzykuje — dopnij callback do jego onload.
+        existing.addEventListener('load', callback, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = HUBSPOT_EMBED_SRC;
+      script.charset = 'utf-8';
+      script.async = true;
+      script.setAttribute('data-hubspot-embed', '');
+      script.addEventListener('load', callback, { once: true });
+      document.head.appendChild(script);
+    }
+
     function initHubspotForm() {
-      if (!window.hbspt) return;
+      if (hubspotFormRendered) return; // formularz już osadzony — nie dubluj
 
-      const poemStr = buildPoem();
-      window.__wagoConfig = { poem: poemStr }; // podgląd/debug
+      loadHubspotScript(function () {
+        if (!window.hbspt || hubspotFormRendered) return;
+        hubspotFormRendered = true;
 
-      hbspt.forms.create({
-        portalId: "145269444",
-        formId:   "9e702531-565f-4d62-b800-95fb4f5cf4f2",
-        region:   "eu1",
-        target:   "#hubspot-form-placeholder",
-        // HubSpot renderuje formularz w iframe SAME-ORIGIN (src pusty), więc
-        // mamy dostęp do jego contentDocument. Pole 'poem' wypełniamy ręcznie
-        // po wyrenderowaniu — prefill przez `values` HubSpot dla tego pola
-        // ignoruje. Iframe ładuje się asynchronicznie → retry.
-        onFormReady: function () { setPoemInIframe(poemStr); }
+        const poemStr = buildPoem();
+        window.__wagoConfig = { poem: poemStr }; // podgląd/debug
+
+        hbspt.forms.create({
+          portalId: "145269444",
+          formId:   "9e702531-565f-4d62-b800-95fb4f5cf4f2",
+          region:   "eu1",
+          target:   "#hubspot-form-placeholder",
+          // HubSpot renderuje formularz w iframe SAME-ORIGIN (src pusty), więc
+          // mamy dostęp do jego contentDocument. Pole 'poem' wypełniamy ręcznie
+          // po wyrenderowaniu — prefill przez `values` HubSpot dla tego pola
+          // ignoruje. Iframe ładuje się asynchronicznie → retry.
+          onFormReady: function () { setPoemInIframe(poemStr); }
+        });
       });
     }
 

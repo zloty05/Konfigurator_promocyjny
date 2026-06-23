@@ -1,4 +1,14 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  # Whitelisting domen mogących osadzać konfigurator w iframe (wymóg HQ WAGO).
+  # Tylko frame-ancestors — celowo BEZ script-src/frame-src, bo HubSpot + reCAPTCHA
+  # ładują wiele domen i restrykcyjny CSP zasobów zepsułby działający formularz.
+  # Musi pozwalać na www.wago.com (pokryte przez *.wago.com) — produkcyjne osadzenie:
+  # https://www.wago.com/pl/zestawy-bc100/konfigurator-zestawu-bc100
+  Content-Security-Policy: frame-ancestors 'self' https://wago.com https://*.wago.com
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Fallback dla starych przeglądarek bez frame-ancestors (źródłem prawdy jest CSP wyżej).
+  X-Frame-Options: ALLOW-FROM https://www.wago.com
 
