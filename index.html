@@ -1399,9 +1399,50 @@
       { catalog: '750-564',  name: 'Moduł wyjść analogowych',   desc: '4 AO konfigurowalne napięciowe/prądowe (U/I)', base: 1365.00, promo: 1023.75, url: 'https://www.wago.com/pl/systemy-i-o/wyjscie-analogowe/p/750-564' },
     ];
 
-    const BASE_SET_PRICE = 1000.00;
+    // Ceny zestawu bazowego per rynek. PL w PLN; LT/LV w EUR — null = brak
+    // cennika (TODO od WAGO LT/LV). NIGDY nie przeliczać z PLN kursem.
+    const BASE_SET_PRICES = { pl: 1000.00, lt: null, lv: null };
+    const BASE_SET_PRICE = BASE_SET_PRICES[LANG] ?? BASE_SET_PRICES.pl; // TODO: usunąć fallback po dostawie cen EUR
     const QTY_MAX_BASKET1 = 5;
     const MIN_UNIQUE_BASKET1 = 2;
+
+    /* =========================================================
+       DANE PER RYNEK (LT/LV)
+       Nakładka na dane PL — dane bazowe w BASKET*_ITEMS zostają po polsku.
+    ========================================================= */
+    // Cenniki EUR per numer katalogowy: { '750-637': { base: 330.00, promo: 165.00 }, ... }
+    // null/undefined lub brak wpisu = produkt UKRYTY w danym języku (fallback do
+    // cen PLN byłby błędem — waluta nie może się mieszać). TODO: cenniki od WAGO LT/LV.
+    const PRICES_EUR = {
+      lt: {},   // TODO: uzupełnić po otrzymaniu cennika WAGO LT
+      lv: {},   // TODO: uzupełnić po otrzymaniu cennika WAGO LV
+    };
+
+    // Tłumaczenia nazw produktów i grup — klucz = tekst PL (name/group z BASKET*_ITEMS).
+    // Wspólna mapa dla obu koszyków; `desc` (parametry techniczne) pozostaje bez tłumaczenia.
+    // Wypełniane w commicie z tłumaczeniami; brak wpisu = tekst PL (fallback).
+    const PRODUCT_TERMS = {
+      lt: {},
+      lv: {},
+    };
+
+    // Akcesory — reszta kodu nie zna struktury nakładki.
+    function itemName(item)  { return (PRODUCT_TERMS[LANG] || {})[item.name]  || item.name; }
+    function itemGroup(item) { return item.group ? ((PRODUCT_TERMS[LANG] || {})[item.group] || item.group) : item.group; }
+    // Linki produktowe: wago.com/pl/... → wago.com/lt|lv/... (numery katalogowe wspólne).
+    function itemUrl(item)   { return LANG === 'pl' ? item.url : (item.url || '').replace('www.wago.com/pl/', 'www.wago.com/' + LANG + '/'); }
+    // Ceny bieżącego rynku: PL wprost z danych; LT/LV z cennika EUR (brak = null → produkt ukryty).
+    function itemPrice(item) {
+      if (LANG === 'pl') return { base: item.base, promo: item.promo };
+      return PRICES_EUR[LANG][item.catalog] || null;
+    }
+
+    // Listy produktów widoczne w bieżącym języku (bez ceny w danym rynku → ukryte).
+    // Do czasu dostarczenia cenników EUR wersje LT/LV pokazują pełną listę z cenami PLN?
+    // NIE — pokazują tylko produkty z ceną EUR; pusty cennik = puste koszyki (celowe:
+    // wersja rynkowa nie może pójść na produkcję bez cen).
+    const ITEMS1 = BASKET1_ITEMS.filter(it => itemPrice(it));
+    const ITEMS2 = BASKET2_ITEMS.filter(it => itemPrice(it));
 
     /* =========================================================
        STATE
@@ -1437,17 +1478,17 @@
        STATE INITIALIZATION
     ========================================================= */
     function initState() {
-      BASKET1_ITEMS.forEach(item => {
+      ITEMS1.forEach(item => {
         state.basket1[item.catalog] = { qty: 1, checked: false };
       });
-      BASKET2_ITEMS.forEach(item => {
+      ITEMS2.forEach(item => {
         state.basket2[item.catalog] = { qty: 1, checked: false };
       });
 
       // Stan zwijania grup basket1 — wszystkie zwinięte na starcie.
       state.basket1Groups = {};
-      BASKET1_ITEMS.forEach(item => {
-        const g = item.group || t('group.fallback');
+      ITEMS1.forEach(item => {
+        const g = itemGroup(item) || t('group.fallback');
         if (!(g in state.basket1Groups)) {
           state.basket1Groups[g] = false;
         }
@@ -1466,9 +1507,10 @@
       const totalQty1 = basketKey === 'basket1' ? getBasket1TotalQty() : 999;
       const incDisabled = (basketKey === 'basket1' && totalQty1 >= QTY_MAX_BASKET1) ? ' disabled' : '';
       const decDisabled = s.qty <= 1 ? ' disabled' : '';
-      const productUrl = item.url || '#';
-      const title = item.name || item.group || item.desc;
-      const isSafety = item.group === 'Moduł Safety';
+      const productUrl = itemUrl(item) || '#';
+      const title = itemName(item) || itemGroup(item) || item.desc;
+      const price = itemPrice(item);
+      const isSafety = item.group === 'Moduł Safety'; // klucz PL — porównanie na danych bazowych
       const imgSrc = isSafety ? 'safety.jpg' : '632.jpg';
       const imgClass = isSafety ? 'module-card__img module-card__img--safety' : 'module-card__img';
 
@@ -1493,9 +1535,9 @@
             >${title}</a>
             <span class="module-card__desc">${item.desc}</span>
             <div class="module-card__prices">
-              <span class="module-card__price-base">${formatPrice(item.base)}</span>
+              <span class="module-card__price-base">${formatPrice(price.base)}</span>
               <span class="module-card__price-promo">
-                ${formatPrice(item.promo)}
+                ${formatPrice(price.promo)}
                 <span class="badge badge--discount">${discountLabel}</span>
               </span>
             </div>
@@ -1551,7 +1593,7 @@
       const order = [];
       const groups = {};
       items.forEach(item => {
-        const g = item.group || t('group.fallback');
+        const g = itemGroup(item) || t('group.fallback');
         if (!groups[g]) { groups[g] = []; order.push(g); }
         groups[g].push(item);
       });
@@ -1658,7 +1700,7 @@
     function updateGroupSummaries() {
       document.querySelectorAll('#basket1-modules .module-group').forEach(section => {
         const groupName = section.dataset.group;
-        const items = BASKET1_ITEMS.filter(it => (it.group || t('group.fallback')) === groupName);
+        const items = ITEMS1.filter(it => (itemGroup(it) || t('group.fallback')) === groupName);
 
         let count = 0;
         let total = 0;
@@ -1666,7 +1708,7 @@
           const s = state.basket1[it.catalog];
           if (s && s.checked) {
             count++;
-            total = roundCents(total + it.promo * s.qty);
+            total = roundCents(total + itemPrice(it).promo * s.qty);
           }
         });
 
@@ -1801,21 +1843,25 @@
        COMPUTE SUMMARY
     ========================================================= */
     function computeSummary() {
-      const b1Lines = BASKET1_ITEMS
-        .filter(item => state.basket1[item.catalog].checked)
-        .map(item => ({
+      // Linie z cenami bieżącego rynku (base/promo z itemPrice — PL: PLN, LT/LV: EUR).
+      const toLine = (item, s) => {
+        const price = itemPrice(item);
+        return {
           ...item,
-          qty: state.basket1[item.catalog].qty,
-          lineTotal: roundCents(item.promo * state.basket1[item.catalog].qty),
-        }));
+          base: price.base,
+          promo: price.promo,
+          qty: s.qty,
+          lineTotal: roundCents(price.promo * s.qty),
+        };
+      };
 
-      const b2Lines = BASKET2_ITEMS
+      const b1Lines = ITEMS1
+        .filter(item => state.basket1[item.catalog].checked)
+        .map(item => toLine(item, state.basket1[item.catalog]));
+
+      const b2Lines = ITEMS2
         .filter(item => state.basket2[item.catalog].checked)
-        .map(item => ({
-          ...item,
-          qty: state.basket2[item.catalog].qty,
-          lineTotal: roundCents(item.promo * state.basket2[item.catalog].qty),
-        }));
+        .map(item => toLine(item, state.basket2[item.catalog]));
 
       const basket1Total = roundCents(b1Lines.reduce((s, l) => s + l.lineTotal, 0));
       const basket2Total = roundCents(b2Lines.reduce((s, l) => s + l.lineTotal, 0));
@@ -1924,30 +1970,35 @@
     /* =========================================================
        HUBSPOT INTEGRATION
     ========================================================= */
+    // Buduje tekst konfiguracji do ukrytego pola HubSpot 'poem'.
+    // Etykiety PO ANGIELSKU — jeden format dla wszystkich rynków w CRM;
+    // tag [PL]/[LT]/[LV] + kod waluty eliminują dwuznaczność kwot
+    // (PLN i EUR w jednym CRM). Kwoty z formatPrice → zawsze z symbolem waluty.
     function buildPoem() {
       const { b1Lines, b2Lines, grandTotal } = computeSummary();
+      const cur = LOCALES[LANG].currencyCode;
 
       const lines = [];
-      lines.push('KONFIGURACJA WAGO');
+      lines.push(`WAGO CONFIGURATION [${LANG.toUpperCase()}] (${cur})`);
       lines.push('');
-      lines.push(`Baza: 750-8001 + 750-600 — ${formatPrice(BASE_SET_PRICE)}`);
+      lines.push(`Base: 750-8001 + 750-600 — ${formatPrice(BASE_SET_PRICE)}`);
       lines.push('');
 
-      lines.push('Koszyk obowiązkowy (-50%):');
+      lines.push('Mandatory basket (-50%):');
       b1Lines.forEach(l => {
         lines.push(`  ${l.catalog} ×${l.qty} — ${formatPrice(l.lineTotal)}`);
       });
 
       if (b2Lines.length > 0) {
         lines.push('');
-        lines.push('Koszyk opcjonalny (-25%):');
+        lines.push('Optional basket (-25%):');
         b2Lines.forEach(l => {
           lines.push(`  ${l.catalog} ×${l.qty} — ${formatPrice(l.lineTotal)}`);
         });
       }
 
       lines.push('');
-      lines.push(`WARTOŚĆ CAŁKOWITA: ${formatPrice(grandTotal)}`);
+      lines.push(`TOTAL: ${formatPrice(grandTotal)}`);
 
       return lines.join('\n');
     }
@@ -1989,7 +2040,9 @@
 
         hbspt.forms.create({
           portalId: "145269444",
-          formId:   "9e702531-565f-4d62-b800-95fb4f5cf4f2",
+          // formId per rynek (LOCALES). null (LT/LV — formId jeszcze nie
+          // dostarczone przez WAGO) → tymczasowo formularz PL.
+          formId:   LOCALES[LANG].hubspotFormId || LOCALES.pl.hubspotFormId,
           region:   "eu1",
           target:   "#hubspot-form-placeholder",
           // HubSpot renderuje formularz w iframe SAME-ORIGIN (src pusty), więc
@@ -2145,8 +2198,8 @@
         el.textContent = formatPrice(BASE_SET_PRICE);
       });
       initState();
-      renderGroupedCards(BASKET1_ITEMS, 'basket1', 'basket1-modules', '−50%');
-      renderModuleCards(BASKET2_ITEMS, 'basket2', 'basket2-modules', '−25%');
+      renderGroupedCards(ITEMS1, 'basket1', 'basket1-modules', '−50%');
+      renderModuleCards(ITEMS2, 'basket2', 'basket2-modules', '−25%');
       renderLiveSummary();
       updateNextButton1();
       updateGroupSummaries();
