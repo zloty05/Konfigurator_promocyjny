@@ -1547,6 +1547,18 @@
         'Moduł wyjść dwustanowych': 'Skaitmeninių išėjimų modulis',
         'Moduł wejść analogowych': 'Analoginių įėjimų modulis',
         'Moduł wyjść analogowych': 'Analoginių išėjimų modulis',
+        // Opisy (desc) zawierające polskie słowa — czysto techniczne bez wpisu (fallback = oryginał).
+        '24V, góra/dół, 100kHz': '24V, aukštyn/žemyn, 100kHz',
+        '24V, góra, bramkowany': '24V, aukštyn, su blokavimu',
+        'góra/dół, z wyjściem cyfrowym': 'aukštyn/žemyn, su skaitmeniniu išėjimu',
+        '2x góra, 16bit': '2x aukštyn, 16bit',
+        '24V, 2x góra/dół, 16bit, 500Hz': '24V, 2x aukštyn/žemyn, 16bit, 500Hz',
+        '2 wyjścia z regul. szerokości impulsu (PWM)': '2 išėjimai su impulso pločio reguliavimu (PWM)',
+        'podłączanie 2-, 3-, 4-przewodowe': '2, 3, 4 laidų prijungimas',
+        '4FDI/2FDO; PROFIsafe; logika': '4FDI/2FDO; PROFIsafe; logika',
+        '4FDI/4FDO; PROFIsafe; logika': '4FDI/4FDO; PROFIsafe; logika',
+        '4 AI do RTD, 2-, 3-, 4-przewodowe': '4 AI RTD, 2, 3, 4 laidų',
+        '4 AO konfigurowalne napięciowe/prądowe (U/I)': '4 AO konfigūruojami įtampos/srovės (U/I)',
       },
       lv: {
         'Moduł enkodera inkrementalnego': 'Inkrementālā enkodera modulis',
@@ -1563,12 +1575,27 @@
         'Moduł wyjść dwustanowych': 'Digitālo izeju modulis',
         'Moduł wejść analogowych': 'Analogo ieeju modulis',
         'Moduł wyjść analogowych': 'Analogo izeju modulis',
+        // Opisy (desc) zawierające polskie słowa — czysto techniczne bez wpisu (fallback = oryginał).
+        '24V, góra/dół, 100kHz': '24V, uz augšu/leju, 100kHz',
+        '24V, góra, bramkowany': '24V, uz augšu, ar bloķēšanu',
+        'góra/dół, z wyjściem cyfrowym': 'uz augšu/leju, ar digitālo izeju',
+        '2x góra, 16bit': '2x uz augšu, 16bit',
+        '24V, 2x góra/dół, 16bit, 500Hz': '24V, 2x uz augšu/leju, 16bit, 500Hz',
+        '2 wyjścia z regul. szerokości impulsu (PWM)': '2 izejas ar impulsa platuma regulēšanu (PWM)',
+        'podłączanie 2-, 3-, 4-przewodowe': '2, 3, 4 vadu pieslēgums',
+        '4FDI/2FDO; PROFIsafe; logika': '4FDI/2FDO; PROFIsafe; loģika',
+        '4FDI/4FDO; PROFIsafe; logika': '4FDI/4FDO; PROFIsafe; loģika',
+        '4 AI do RTD, 2-, 3-, 4-przewodowe': '4 AI RTD, 2, 3, 4 vadu',
+        '4 AO konfigurowalne napięciowe/prądowe (U/I)': '4 AO konfigurējamas sprieguma/strāvas (U/I)',
       },
     };
 
     // Akcesory — reszta kodu nie zna struktury nakładki.
     function itemName(item)  { return (PRODUCT_TERMS[LANG] || {})[item.name]  || item.name; }
     function itemGroup(item) { return item.group ? ((PRODUCT_TERMS[LANG] || {})[item.group] || item.group) : item.group; }
+    // Opisy: część jest czysto techniczna (wspólna), ale część zawiera polskie
+    // słowa („góra/dół", „podłączanie…") — tłumaczone tą samą mapą PRODUCT_TERMS.
+    function itemDesc(item)  { return (PRODUCT_TERMS[LANG] || {})[item.desc]  || item.desc; }
     // Linki produktowe: wago.com/pl/... → wago.com/lt|lv/... (numery katalogowe wspólne).
     function itemUrl(item)   { return LANG === 'pl' ? item.url : (item.url || '').replace('www.wago.com/pl/', 'www.wago.com/' + LANG + '/'); }
     // Ceny bieżącego rynku: PL wprost z danych; LT/LV z cennika EUR (brak = null → produkt ukryty).
@@ -1650,7 +1677,7 @@
       const incDisabled = (basketKey === 'basket1' && totalQty1 >= QTY_MAX_BASKET1) ? ' disabled' : '';
       const decDisabled = s.qty <= 1 ? ' disabled' : '';
       const productUrl = itemUrl(item) || '#';
-      const title = itemName(item) || itemGroup(item) || item.desc;
+      const title = itemName(item) || itemGroup(item) || itemDesc(item);
       const price = itemPrice(item);
       const isSafety = item.group === 'Moduł Safety'; // klucz PL — porównanie na danych bazowych
       const imgSrc = isSafety ? 'safety.jpg' : '632.jpg';
@@ -1675,7 +1702,7 @@
               tabindex="0"
               onclick="event.stopPropagation()"
             >${title}</a>
-            <span class="module-card__desc">${item.desc}</span>
+            <span class="module-card__desc">${itemDesc(item)}</span>
             <div class="module-card__prices">
               <span class="module-card__price-base">${formatPrice(price.base)}</span>
               <span class="module-card__price-promo">
@@ -2050,7 +2077,7 @@
           html += `<div class="summary-row">
             <div class="summary-row__left">
               <span class="summary-row__catalog">${l.catalog}</span>
-              <span class="summary-row__desc">${l.desc}</span>
+              <span class="summary-row__desc">${itemDesc(l)}</span>
               <span class="summary-row__qty">× ${l.qty}</span>
             </div>
             <span class="summary-row__price">${formatPrice(l.lineTotal)}</span>
@@ -2073,7 +2100,7 @@
           html += `<div class="summary-row">
             <div class="summary-row__left">
               <span class="summary-row__catalog">${l.catalog}</span>
-              <span class="summary-row__desc">${l.desc}</span>
+              <span class="summary-row__desc">${itemDesc(l)}</span>
               <span class="summary-row__qty">× ${l.qty}</span>
             </div>
             <span class="summary-row__price">${formatPrice(l.lineTotal)}</span>
