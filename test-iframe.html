@@ -18,8 +18,28 @@
       border-radius: 4px;
       margin-bottom: 20px;
       font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .host-bar span { opacity: 0.7; }
+    .lang-switch { margin-left: auto; display: flex; gap: 8px; }
+    .lang-switch button {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .lang-switch button.active {
+      background: #6ec800;
+      border-color: #6ec800;
+      color: #1f2837;
+      font-weight: bold;
+    }
     iframe {
       border: none;
       display: block;
@@ -31,7 +51,12 @@
 </head>
 <body>
   <div class="host-bar">
-    Symulacja strony hosta (wago.com) &nbsp;<span>— iframe poniżej ładuje konfigurator z localhost:5500</span>
+    Symulacja strony hosta (wago.com) &nbsp;<span id="host-info">— iframe poniżej ładuje konfigurator</span>
+    <div class="lang-switch">
+      <button data-lang="" class="active">PL</button>
+      <button data-lang="lt">LT</button>
+      <button data-lang="lv">LV</button>
+    </div>
   </div>
   <iframe
     id="wago-konfigurator"
@@ -40,5 +65,23 @@
     loading="lazy"
     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
   ></iframe>
+  <script>
+    // Przełącznik wersji językowych: PL (bez parametru), LT (?lang=lt), LV (?lang=lv).
+    // Zmień BASE na 'http://localhost:5500' żeby testować lokalne zmiany.
+    // Uwaga: test frame-ancestors (_headers) wymaga wdrożenia na Cloudflare —
+    // lokalnie nagłówki są ignorowane.
+    const BASE = 'https://konfigurator-promocyjny.pages.dev/';
+    const frame = document.getElementById('wago-konfigurator');
+    const info = document.getElementById('host-info');
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const lang = btn.dataset.lang;
+        frame.src = lang ? BASE + '?lang=' + lang : BASE;
+        info.textContent = '— iframe: ' + frame.src;
+      });
+    });
+  </script>
 </body>
 </html>
