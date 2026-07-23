@@ -738,11 +738,19 @@
       text-align: right;
     }
 
+    .live-summary__base-old[hidden] {
+      display: none; /* display:block niżej wygrywałby z atrybutem hidden */
+    }
+
     .live-summary__base-old {
       display: block;
       font-size: 0.8125rem;
       color: var(--gray-40);
       text-decoration: line-through;
+    }
+
+    .live-summary__savings[hidden] {
+      display: none; /* display:flex niżej wygrywałby z atrybutem hidden */
     }
 
     .live-summary__savings {
@@ -1595,6 +1603,8 @@
       return new Intl.NumberFormat(loc.intl, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
+        useGrouping: 'always', // pl-PL domyślnie grupuje od 5 cyfr — wymuś „1 000,00"
+
       }).format(value) + ' ' + loc.currency;
     }
 
