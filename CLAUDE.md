@@ -90,14 +90,13 @@ Detekcja języka (stała `LANG`, początek `<script>`): `?lang=` → fallback z 
 
 - **Cenniki EUR** (`PRICES_EUR.lt/lv`, `BASE_SET_PRICES.lt/lv`) — puste; do czasu uzupełnienia wersje LT/LV pokazują puste koszyki (nie mogą iść do klienta). `BASE_SET_PRICE` ma tymczasowy fallback do PL (unika NaN w testach) — usunąć po dostawie cen
 - **`hubspotFormId` LT/LV** (`LOCALES`) — `null` = tymczasowo formularz PL
-- **Tłumaczenia** — robocze (Claude), do weryfikacji przez lokalne organizacje przez `tlumaczenia_LT_LV.xlsx` (arkusze UI i Produkty); poprawki nanosić w `I18N` i `PRODUCT_TERMS` (oraz w Excelu — generowany skryptem ad hoc, nie build step)
+- **Tłumaczenia i ceny EUR** — jeden plik `weryfikacja_LT_LV.xlsx` (arkusze: INSTRUKCJA, Moduły, Zestaw bazowy, Teksty strony (UI)) — do wysłania do lokalnych organizacji; po wypełnieniu importowany do `PRICES_EUR`, `BASE_SET_PRICES`, `PRODUCT_TERMS` i `I18N` (plik i import — skrypty ad hoc, nie build step)
 
 ### Jak uzupełnić rynek LT (analogicznie LV)
 
-1. Ceny: wpisz `BASE_SET_PRICES.lt` i pozycje w `PRICES_EUR.lt` (base/promo w EUR z cennika WAGO LT — **nie przeliczać z PLN**)
+1. Dane z wypełnionego `weryfikacja_LT_LV.xlsx` (arkusz Moduły: ceny promo EUR → `PRICES_EUR.lt` z base wyliczonym: koszyk1 `promo×2`, koszyk2 `promo÷0,75`; nazwy/opisy → `PRODUCT_TERMS.lt`; arkusz Zestaw bazowy → `BASE_SET_PRICES.lt` + klucze `base.*` w `I18N.lt`; arkusz UI → `I18N.lt`). **Cen nie przeliczać z PLN kursem**
 2. HubSpot: wpisz `LOCALES.lt.hubspotFormId` (formularz musi mieć ukryte pole `name="poem"`)
-3. Tłumaczenia: nanieś poprawki z weryfikacji do `I18N.lt` i `PRODUCT_TERMS.lt`
-4. Test: `http://localhost:5500/?lang=lt` + `test-iframe.html` (przełącznik PL/LT/LV)
+3. Test: `http://localhost:5500/?lang=lt` + `test-iframe.html` (przełącznik PL/LT/LV)
 
 ### Layout i responsywność
 
