@@ -1086,47 +1086,47 @@
         <div id="content-column">
 
           <!-- Progress bar -->
-          <nav id="progress-bar" aria-label="Kroki konfiguracji">
+          <nav id="progress-bar" aria-label="Kroki konfiguracji" data-i18n-aria="progress.aria">
             <ol class="steps">
               <li id="step-indicator-1" class="step step--active" aria-current="step">
                 <span class="step-dot" aria-hidden="true"></span>
-                <span class="step-label">Koszyk obowiązkowy</span>
+                <span class="step-label" data-i18n="step1.title">Koszyk obowiązkowy</span>
               </li>
               <li id="step-indicator-2" class="step">
                 <span class="step-dot" aria-hidden="true"></span>
-                <span class="step-label">Koszyk opcjonalny</span>
+                <span class="step-label" data-i18n="step2.title">Koszyk opcjonalny</span>
               </li>
             </ol>
           </nav>
 
           <!-- Base set card — always visible — grid: obrazek | opis | cena -->
-          <section id="base-set-card" aria-label="Zestaw bazowy">
+          <section id="base-set-card" aria-label="Zestaw bazowy" data-i18n-aria="base.aria">
             <div class="base-set__img-wrap">
-              <img src="2000-8634167-DE.jpg" alt="Sterownik 750-8001" class="base-set__img" width="114" height="90">
+              <img src="2000-8634167-DE.jpg" alt="Sterownik 750-8001" data-i18n-alt="base.imgAlt" class="base-set__img" width="114" height="90">
             </div>
             <div class="base-set__text">
-              <div class="base-set__label">Baza (w cenie kompletnej konfiguracji)</div>
-              <div class="base-set__desc">Sterownik 750-8001 + Moduł końcowy 750-600</div>
-              <div class="base-set__note">Stały element każdej konfiguracji</div>
+              <div class="base-set__label" data-i18n="base.label">Baza (w cenie kompletnej konfiguracji)</div>
+              <div class="base-set__desc" data-i18n="base.desc">Sterownik 750-8001 + Moduł końcowy 750-600</div>
+              <div class="base-set__note" data-i18n="base.note">Stały element każdej konfiguracji</div>
             </div>
             <div class="base-set__price-block">
-              <div class="base-set__price-label">Cena</div>
-              <div class="base-set__price">1 000,00 zł</div>
+              <div class="base-set__price-label" data-i18n="base.priceLabel">Cena</div>
+              <div class="base-set__price" data-base-price>1 000,00 zł</div>
             </div>
           </section>
 
           <!-- ===== STEP 1 ===== -->
           <section id="step-1" class="step-panel" aria-labelledby="step1-heading">
-            <h2 id="step1-heading" tabindex="-1">Koszyk obowiązkowy</h2>
-            <p class="step-description">Wybierz minimum 2 różne moduły. Łączna ilość wszystkich wybranych: maksymalnie 5 szt.</p>
+            <h2 id="step1-heading" tabindex="-1" data-i18n="step1.title">Koszyk obowiązkowy</h2>
+            <p class="step-description" data-i18n="step1.desc">Wybierz minimum 2 różne moduły. Łączna ilość wszystkich wybranych: maksymalnie 5 szt.</p>
 
-            <div id="basket1-modules" class="module-grid" role="list" aria-label="Moduły koszyka obowiązkowego"></div>
+            <div id="basket1-modules" class="module-grid" role="list" aria-label="Moduły koszyka obowiązkowego" data-i18n-aria="step1.modulesAria"></div>
 
             <div id="validation-msg-1" class="validation-msg" role="alert" aria-live="assertive"></div>
 
             <div class="step-actions step-actions--single">
               <button id="btn-next-1" class="btn btn--primary" disabled aria-disabled="true">
-                Dalej
+                <span data-i18n="btn.next">Dalej</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </div>
@@ -1134,20 +1134,20 @@
 
           <!-- ===== STEP 2 ===== -->
           <section id="step-2" class="step-panel step-panel--hidden" aria-labelledby="step2-heading">
-            <h2 id="step2-heading" tabindex="-1">
+            <h2 id="step2-heading" tabindex="-1" data-i18n="step2.title">
               Koszyk opcjonalny
             </h2>
-            <p class="step-description">Opcjonalne moduły uzupełniające — możesz pominąć ten etap.</p>
+            <p class="step-description" data-i18n="step2.desc">Opcjonalne moduły uzupełniające — możesz pominąć ten etap.</p>
 
-            <div id="basket2-modules" class="module-grid" role="list" aria-label="Moduły koszyka opcjonalnego"></div>
+            <div id="basket2-modules" class="module-grid" role="list" aria-label="Moduły koszyka opcjonalnego" data-i18n-aria="step2.modulesAria"></div>
 
             <div class="step-actions">
               <button id="btn-back-2" class="btn btn--secondary">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Wróć
+                <span data-i18n="btn.back">Wróć</span>
               </button>
               <button id="btn-next-2" class="btn btn--primary">
-                Dalej
+                <span data-i18n="btn.next">Dalej</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </div>
@@ -1155,8 +1155,8 @@
 
           <!-- ===== STEP 3 ===== -->
           <section id="step-3" class="step-panel step-panel--hidden" aria-labelledby="step3-heading">
-            <h2 id="step3-heading" tabindex="-1">Podsumowanie oferty</h2>
-            <p class="step-description">Sprawdź konfigurację i wypełnij formularz kontaktowy.</p>
+            <h2 id="step3-heading" tabindex="-1" data-i18n="step3.title">Podsumowanie oferty</h2>
+            <p class="step-description" data-i18n="step3.desc">Sprawdź konfigurację i wypełnij formularz kontaktowy.</p>
 
             <div class="summary-table-wrap">
               <div id="summary-table" aria-live="polite"></div>
@@ -1182,7 +1182,7 @@
             <div class="step-actions">
               <button id="btn-back-3" class="btn btn--secondary">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Wróć
+                <span data-i18n="btn.back">Wróć</span>
               </button>
             </div>
           </section>
@@ -1190,37 +1190,37 @@
         </div><!-- /content-column -->
 
         <!-- ===== KOLUMNA PRAWA: sticky podsumowanie ===== -->
-        <aside id="live-summary" aria-label="Podsumowanie na żywo" aria-live="polite">
-          <div class="live-summary__title">Twoja konfiguracja</div>
+        <aside id="live-summary" aria-label="Podsumowanie na żywo" aria-live="polite" data-i18n-aria="sidebar.aria">
+          <div class="live-summary__title" data-i18n="sidebar.title">Twoja konfiguracja</div>
 
           <div class="live-summary__row">
-            <span>Zestaw bazowy</span>
-            <strong>1 000,00 zł</strong>
+            <span data-i18n="sidebar.baseSet">Zestaw bazowy</span>
+            <strong data-base-price>1 000,00 zł</strong>
           </div>
           <div class="live-summary__row">
-            <span>Łączna ilość modułów</span>
+            <span data-i18n="sidebar.totalQty">Łączna ilość modułów</span>
             <strong id="summary-total-qty">0 szt.</strong>
           </div>
           <div class="live-summary__row">
-            <span>Koszyk obowiązkowy</span>
+            <span data-i18n="sidebar.basket1">Koszyk obowiązkowy</span>
             <strong id="summary-basket1-price">0,00 zł</strong>
           </div>
           <div class="live-summary__row">
-            <span>Koszyk opcjonalny</span>
+            <span data-i18n="sidebar.basket2">Koszyk opcjonalny</span>
             <strong id="summary-basket2-price">0,00 zł</strong>
           </div>
 
           <div class="live-summary__total">
-            <span class="live-summary__total-label">Razem</span>
+            <span class="live-summary__total-label" data-i18n="sidebar.total">Razem</span>
             <span class="live-summary__total-prices">
               <span class="live-summary__base-old" id="summary-base-total" hidden></span>
-              <span class="live-summary__total-value" id="summary-grand-total">1 000,00 zł</span>
+              <span class="live-summary__total-value" id="summary-grand-total" data-base-price>1 000,00 zł</span>
             </span>
           </div>
           <div class="live-summary__savings" id="summary-savings" hidden>
-            Oszczędzasz <strong id="summary-savings-value">0,00 zł</strong>
+            <span data-i18n="sidebar.savings">Oszczędzasz</span> <strong id="summary-savings-value">0,00 zł</strong>
           </div>
-          <p class="live-summary__note">* Ceny netto. Zestaw bazowy wliczony w każdą konfigurację.</p>
+          <p class="live-summary__note" data-i18n="sidebar.note">* Ceny netto. Zestaw bazowy wliczony w każdą konfigurację.</p>
         </aside>
 
       </div><!-- /main-layout -->
@@ -1228,13 +1228,13 @@
   </main>
 
   <!-- Mobile summary bar -->
-  <div id="mobile-summary-bar" aria-live="polite" aria-label="Podsumowanie">
+  <div id="mobile-summary-bar" aria-live="polite" aria-label="Podsumowanie" data-i18n-aria="mobile.aria">
     <div class="mobile-bar__info">
       <span id="mobile-bar-modules">0 modułów</span>
       &nbsp;·&nbsp;
       <span id="mobile-bar-qty">0 szt.</span>
     </div>
-    <div class="mobile-bar__price" id="mobile-bar-total">1 000,00 zł</div>
+    <div class="mobile-bar__price" id="mobile-bar-total" data-base-price>1 000,00 zł</div>
   </div>
 
   <!-- =====================================================
@@ -1242,6 +1242,121 @@
   ====================================================== -->
   <script>
     'use strict';
+
+    /* =========================================================
+       I18N — język, locale, słownik tłumaczeń
+       Wybór języka: parametr ?lang=lt|lv w src iframe (główny mechanizm),
+       fallback: detekcja z document.referrer (może być ucięty przez
+       Referrer-Policy strony osadzającej — wtedy PL), ostatecznie 'pl'.
+    ========================================================= */
+    const SUPPORTED_LANGS = ['pl', 'lt', 'lv'];
+    const LANG = (() => {
+      const p = new URLSearchParams(location.search).get('lang');
+      if (SUPPORTED_LANGS.includes(p)) return p;
+      const ref = document.referrer;
+      if (/wago\.com\/lt\/|wago\.lt/.test(ref)) return 'lt';
+      if (/wago\.com\/lv\/|wago\.lv/.test(ref)) return 'lv';
+      return 'pl';
+    })();
+    document.documentElement.lang = LANG;
+
+    // Konfiguracja per locale. hubspotFormId: null → tymczasowo używany
+    // formularz PL (do czasu dostarczenia formId przez WAGO LT/LV).
+    const LOCALES = {
+      pl: { intl: 'pl-PL', currency: 'zł', currencyCode: 'PLN', hubspotFormId: '9e702531-565f-4d62-b800-95fb4f5cf4f2' },
+      lt: { intl: 'lt-LT', currency: '€',  currencyCode: 'EUR', hubspotFormId: null }, // TODO: formId od WAGO LT
+      lv: { intl: 'lv-LV', currency: '€',  currencyCode: 'EUR', hubspotFormId: null }, // TODO: formId od WAGO LV
+    };
+
+    // Słownik tłumaczeń. Wpisy z parametrami są funkcjami (interpolacja +
+    // szyk zdania per język). Fallback do PL — TYLKO dla tekstów (nigdy cen).
+    // Formy liczby mnogiej wg kategorii Intl.PluralRules (pl: one/few/many,
+    // lt: one/few/many/other, lv: zero/one/other).
+    const I18N = {
+      pl: {
+        'title': 'Konfigurator zestawu promocyjnego — WAGO',
+        'progress.aria': 'Kroki konfiguracji',
+        'base.aria': 'Zestaw bazowy',
+        'base.imgAlt': 'Sterownik 750-8001',
+        'base.label': 'Baza (w cenie kompletnej konfiguracji)',
+        'base.desc': 'Sterownik 750-8001 + Moduł końcowy 750-600',
+        'base.note': 'Stały element każdej konfiguracji',
+        'base.priceLabel': 'Cena',
+        'step1.title': 'Koszyk obowiązkowy',
+        'step1.desc': 'Wybierz minimum 2 różne moduły. Łączna ilość wszystkich wybranych: maksymalnie 5 szt.',
+        'step1.modulesAria': 'Moduły koszyka obowiązkowego',
+        'step2.title': 'Koszyk opcjonalny',
+        'step2.desc': 'Opcjonalne moduły uzupełniające — możesz pominąć ten etap.',
+        'step2.modulesAria': 'Moduły koszyka opcjonalnego',
+        'step3.title': 'Podsumowanie oferty',
+        'step3.desc': 'Sprawdź konfigurację i wypełnij formularz kontaktowy.',
+        'btn.next': 'Dalej',
+        'btn.back': 'Wróć',
+        'sidebar.aria': 'Podsumowanie na żywo',
+        'sidebar.title': 'Twoja konfiguracja',
+        'sidebar.baseSet': 'Zestaw bazowy',
+        'sidebar.totalQty': 'Łączna ilość modułów',
+        'sidebar.basket1': 'Koszyk obowiązkowy',
+        'sidebar.basket2': 'Koszyk opcjonalny',
+        'sidebar.total': 'Razem',
+        'sidebar.savings': 'Oszczędzasz',
+        'sidebar.note': '* Ceny netto. Zestaw bazowy wliczony w każdą konfigurację.',
+        'mobile.aria': 'Podsumowanie',
+        'group.fallback': 'Pozostałe',
+        'group.selected': (n) => `${n} ${n === 1 ? 'wybrany' : 'wybrane'}`,
+        'aria.select': (cat) => `Wybierz ${cat}`,
+        'aria.qtyGroup': (cat) => `Ilość: ${cat}`,
+        'aria.qtyDec': (cat) => `Zmniejsz ilość ${cat}`,
+        'aria.qtyInc': (cat) => `Zwiększ ilość ${cat}`,
+        'validation.tooFew': (n) => `wybrano ${n} z wymaganych 2 różnych modułów`,
+        'validation.overLimit': (n) => `łączna ilość ${n} przekracza limit 5 szt.`,
+        'validation.warnPrefix': 'Uwaga: ',
+        'validation.ok': (u, q) => `Wymagania spełnione: ${u} różnych modułów, łącznie ${q} szt.`,
+        'unit.pcs': (q) => `${q} szt.`,
+        'unit.modules': (n) => `${n} ${plural(n, { one: 'moduł', few: 'moduły', many: 'modułów', other: 'modułów' })}`,
+        'summary.baseSet': 'Zestaw bazowy',
+        'summary.baseDesc': 'Sterownik + Moduł końcowy 750-600',
+        'summary.basket1': 'Koszyk obowiązkowy',
+        'summary.basket2': 'Koszyk opcjonalny',
+        'summary.empty': 'Brak wybranych modułów',
+        'summary.subtotal1': 'Razem koszyk obowiązkowy:',
+        'summary.subtotal2': 'Razem koszyk opcjonalny:',
+        'summary.grandTotal': 'Łącznie (netto)',
+        'summary.savings': (amount) => `Oszczędzasz ${amount}`,
+      },
+      lt: {},
+      lv: {},
+    };
+
+    // Zwraca tłumaczenie klucza w bieżącym języku (fallback: PL).
+    function t(key, ...args) {
+      const dict = I18N[LANG] || I18N.pl;
+      const entry = (key in dict) ? dict[key] : I18N.pl[key];
+      return typeof entry === 'function' ? entry(...args) : entry;
+    }
+
+    // Forma liczby mnogiej wg reguł CLDR bieżącego języka.
+    // forms: { zero?, one?, few?, many?, other } — brakująca kategoria → other.
+    function plural(n, forms) {
+      const cat = new Intl.PluralRules(LOCALES[LANG].intl).select(n);
+      return forms[cat] ?? forms.other;
+    }
+
+    // Podmienia teksty statycznego HTML (data-i18n / data-i18n-aria) na start.
+    // Dla PL no-op — HTML jest już po polsku.
+    function applyStaticI18n() {
+      if (LANG === 'pl') return;
+      document.title = t('title');
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+        el.setAttribute('aria-label', t(el.dataset.i18nAria));
+      });
+      document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+        el.setAttribute('alt', t(el.dataset.i18nAlt));
+      });
+    }
 
     /* =========================================================
        DATA
@@ -1301,11 +1416,13 @@
     /* =========================================================
        UTILITIES
     ========================================================= */
-    function formatPLN(value) {
-      return new Intl.NumberFormat('pl-PL', {
+    // Formatuje kwotę wg locale bieżącego języka (pl: „1 415,00 zł", lt/lv: EUR).
+    function formatPrice(value) {
+      const loc = LOCALES[LANG];
+      return new Intl.NumberFormat(loc.intl, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      }).format(value) + ' zł';
+      }).format(value) + ' ' + loc.currency;
     }
 
     function safeId(catalog) {
@@ -1330,7 +1447,7 @@
       // Stan zwijania grup basket1 — wszystkie zwinięte na starcie.
       state.basket1Groups = {};
       BASKET1_ITEMS.forEach(item => {
-        const g = item.group || 'Pozostałe';
+        const g = item.group || t('group.fallback');
         if (!(g in state.basket1Groups)) {
           state.basket1Groups[g] = false;
         }
@@ -1376,9 +1493,9 @@
             >${title}</a>
             <span class="module-card__desc">${item.desc}</span>
             <div class="module-card__prices">
-              <span class="module-card__price-base">${formatPLN(item.base)}</span>
+              <span class="module-card__price-base">${formatPrice(item.base)}</span>
               <span class="module-card__price-promo">
-                ${formatPLN(item.promo)}
+                ${formatPrice(item.promo)}
                 <span class="badge badge--discount">${discountLabel}</span>
               </span>
             </div>
@@ -1386,7 +1503,7 @@
 
           <!-- Kolumna 3: checkbox + kontrolki ilości -->
           <div class="module-card__side">
-            <label class="module-card__checkbox-wrap" for="mod-${sid}" aria-label="Wybierz ${item.catalog}">
+            <label class="module-card__checkbox-wrap" for="mod-${sid}" aria-label="${t('aria.select', item.catalog)}">
               <input
                 type="checkbox"
                 id="mod-${sid}"
@@ -1398,12 +1515,12 @@
               >
               <span class="custom-checkbox" aria-hidden="true"></span>
             </label>
-            <div class="qty-control${qtyHidden}" role="group" aria-label="Ilość: ${item.catalog}">
+            <div class="qty-control${qtyHidden}" role="group" aria-label="${t('aria.qtyGroup', item.catalog)}">
               <button
                 class="qty-btn qty-btn--dec"
                 data-basket="${basketKey}"
                 data-catalog="${item.catalog}"
-                aria-label="Zmniejsz ilość ${item.catalog}"
+                aria-label="${t('aria.qtyDec', item.catalog)}"
                 ${decDisabled}
               >−</button>
               <span class="qty-value" id="qty-val-${sid}" aria-live="polite">${s.qty}</span>
@@ -1411,7 +1528,7 @@
                 class="qty-btn qty-btn--inc"
                 data-basket="${basketKey}"
                 data-catalog="${item.catalog}"
-                aria-label="Zwiększ ilość ${item.catalog}"
+                aria-label="${t('aria.qtyInc', item.catalog)}"
                 ${incDisabled}
               >+</button>
             </div>
@@ -1434,7 +1551,7 @@
       const order = [];
       const groups = {};
       items.forEach(item => {
-        const g = item.group || 'Pozostałe';
+        const g = item.group || t('group.fallback');
         if (!groups[g]) { groups[g] = []; order.push(g); }
         groups[g].push(item);
       });
@@ -1541,7 +1658,7 @@
     function updateGroupSummaries() {
       document.querySelectorAll('#basket1-modules .module-group').forEach(section => {
         const groupName = section.dataset.group;
-        const items = BASKET1_ITEMS.filter(it => (it.group || 'Pozostałe') === groupName);
+        const items = BASKET1_ITEMS.filter(it => (it.group || t('group.fallback')) === groupName);
 
         let count = 0;
         let total = 0;
@@ -1559,8 +1676,7 @@
         const summaryEl = section.querySelector('.module-group__summary');
         if (!summaryEl) return;
         if (hasSel) {
-          const noun = count === 1 ? 'wybrany' : 'wybrane';
-          summaryEl.textContent = `${count} ${noun} · ${formatPLN(total)}`;
+          summaryEl.textContent = `${t('group.selected', count)} · ${formatPrice(total)}`;
         } else {
           summaryEl.textContent = '';
         }
@@ -1635,13 +1751,13 @@
         msgEl.textContent = '';
       } else if (!valid) {
         const parts = [];
-        if (uniqueCount < MIN_UNIQUE_BASKET1) parts.push(`wybrano ${uniqueCount} z wymaganych 2 różnych modułów`);
-        if (totalQty > QTY_MAX_BASKET1) parts.push(`łączna ilość ${totalQty} przekracza limit 5 szt.`);
+        if (uniqueCount < MIN_UNIQUE_BASKET1) parts.push(t('validation.tooFew', uniqueCount));
+        if (totalQty > QTY_MAX_BASKET1) parts.push(t('validation.overLimit', totalQty));
         msgEl.className = 'validation-msg validation-msg--error';
-        msgEl.textContent = 'Uwaga: ' + parts.join('; ') + '.';
+        msgEl.textContent = t('validation.warnPrefix') + parts.join('; ') + '.';
       } else {
         msgEl.className = 'validation-msg validation-msg--ok';
-        msgEl.textContent = `Wymagania spełnione: ${uniqueCount} różnych modułów, łącznie ${totalQty} szt.`;
+        msgEl.textContent = t('validation.ok', uniqueCount, totalQty);
       }
     }
 
@@ -1654,18 +1770,18 @@
       const uniqueCount = b1Lines.length + b2Lines.length;
       const totalQty = [...b1Lines, ...b2Lines].reduce((s, l) => s + l.qty, 0);
 
-      document.getElementById('summary-total-qty').textContent = totalQty + ' szt.';
-      document.getElementById('summary-basket1-price').textContent = formatPLN(basket1Total);
-      document.getElementById('summary-basket2-price').textContent = formatPLN(basket2Total);
-      document.getElementById('summary-grand-total').textContent = formatPLN(grandTotal);
+      document.getElementById('summary-total-qty').textContent = t('unit.pcs', totalQty);
+      document.getElementById('summary-basket1-price').textContent = formatPrice(basket1Total);
+      document.getElementById('summary-basket2-price').textContent = formatPrice(basket2Total);
+      document.getElementById('summary-grand-total').textContent = formatPrice(grandTotal);
 
       // Oszczędność (wariant C): przekreślona cena katalogowa + kwota i procent rabatu.
       const savingsRow  = document.getElementById('summary-savings');
       const baseOldEl   = document.getElementById('summary-base-total');
       if (totalSavings > 0) {
-        baseOldEl.textContent = formatPLN(baseTotal);
+        baseOldEl.textContent = formatPrice(baseTotal);
         baseOldEl.hidden = false;
-        document.getElementById('summary-savings-value').textContent = formatPLN(totalSavings);
+        document.getElementById('summary-savings-value').textContent = formatPrice(totalSavings);
         savingsRow.hidden = false;
       } else {
         baseOldEl.hidden = true;
@@ -1676,12 +1792,9 @@
       const b1Unique = b1Lines.length;
       const b2Unique = b2Lines.length;
       const totalUnique = b1Unique + b2Unique;
-      document.getElementById('mobile-bar-modules').textContent =
-        totalUnique === 1 ? '1 moduł' :
-        totalUnique >= 2 && totalUnique <= 4 ? `${totalUnique} moduły` :
-        `${totalUnique} modułów`;
-      document.getElementById('mobile-bar-qty').textContent = totalQty + ' szt.';
-      document.getElementById('mobile-bar-total').textContent = formatPLN(grandTotal);
+      document.getElementById('mobile-bar-modules').textContent = t('unit.modules', totalUnique);
+      document.getElementById('mobile-bar-qty').textContent = t('unit.pcs', totalQty);
+      document.getElementById('mobile-bar-total').textContent = formatPrice(grandTotal);
     }
 
     /* =========================================================
@@ -1726,24 +1839,24 @@
       let html = '';
 
       // Base set
-      html += `<div class="summary-section-title">Zestaw bazowy</div>`;
+      html += `<div class="summary-section-title">${t('summary.baseSet')}</div>`;
       html += `<div class="summary-row">
         <div class="summary-row__left">
           <span class="summary-row__catalog">750-8001</span>
-          <span class="summary-row__desc">Sterownik + Moduł końcowy 750-600</span>
+          <span class="summary-row__desc">${t('summary.baseDesc')}</span>
         </div>
-        <span class="summary-row__price">1&nbsp;000,00&nbsp;zł</span>
+        <span class="summary-row__price">${formatPrice(BASE_SET_PRICE)}</span>
       </div>`;
 
       // Basket 1
       html += `<div class="summary-divider"></div>`;
       html += `<div class="summary-section-title">
-        Koszyk obowiązkowy
+        ${t('summary.basket1')}
         <span class="badge badge--discount">−50%</span>
       </div>`;
 
       if (b1Lines.length === 0) {
-        html += `<div class="summary-row"><span style="color:var(--gray-40);font-style:italic">Brak wybranych modułów</span></div>`;
+        html += `<div class="summary-row"><span style="color:var(--gray-40);font-style:italic">${t('summary.empty')}</span></div>`;
       } else {
         b1Lines.forEach(l => {
           html += `<div class="summary-row">
@@ -1752,12 +1865,12 @@
               <span class="summary-row__desc">${l.desc}</span>
               <span class="summary-row__qty">× ${l.qty}</span>
             </div>
-            <span class="summary-row__price">${formatPLN(l.lineTotal)}</span>
+            <span class="summary-row__price">${formatPrice(l.lineTotal)}</span>
           </div>`;
         });
         html += `<div class="summary-subtotal">
-          <span>Razem koszyk obowiązkowy:</span>
-          <strong>${formatPLN(basket1Total)}</strong>
+          <span>${t('summary.subtotal1')}</span>
+          <strong>${formatPrice(basket1Total)}</strong>
         </div>`;
       }
 
@@ -1765,7 +1878,7 @@
       if (b2Lines.length > 0) {
         html += `<div class="summary-divider"></div>`;
         html += `<div class="summary-section-title">
-          Koszyk opcjonalny
+          ${t('summary.basket2')}
           <span class="badge badge--discount">−25%</span>
         </div>`;
         b2Lines.forEach(l => {
@@ -1775,12 +1888,12 @@
               <span class="summary-row__desc">${l.desc}</span>
               <span class="summary-row__qty">× ${l.qty}</span>
             </div>
-            <span class="summary-row__price">${formatPLN(l.lineTotal)}</span>
+            <span class="summary-row__price">${formatPrice(l.lineTotal)}</span>
           </div>`;
         });
         html += `<div class="summary-subtotal">
-          <span>Razem koszyk opcjonalny:</span>
-          <strong>${formatPLN(basket2Total)}</strong>
+          <span>${t('summary.subtotal2')}</span>
+          <strong>${formatPrice(basket2Total)}</strong>
         </div>`;
       }
 
@@ -1788,20 +1901,20 @@
       if (totalSavings > 0) {
         html += `<div class="summary-total-row summary-total-row--c">
           <div class="summary-total-row__head">
-            <span class="summary-total-row__label">Łącznie (netto)</span>
+            <span class="summary-total-row__label">${t('summary.grandTotal')}</span>
             <span class="summary-total-row__prices">
-              <span class="stc-old">${formatPLN(baseTotal)}</span>
-              <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
+              <span class="stc-old">${formatPrice(baseTotal)}</span>
+              <span class="summary-total-row__value">${formatPrice(grandTotal)}</span>
             </span>
           </div>
           <div class="stc-savings">
-            Oszczędzasz ${formatPLN(totalSavings)}
+            ${t('summary.savings', formatPrice(totalSavings))}
           </div>
         </div>`;
       } else {
         html += `<div class="summary-total-row">
-          <span class="summary-total-row__label">Łącznie (netto)</span>
-          <span class="summary-total-row__value">${formatPLN(grandTotal)}</span>
+          <span class="summary-total-row__label">${t('summary.grandTotal')}</span>
+          <span class="summary-total-row__value">${formatPrice(grandTotal)}</span>
         </div>`;
       }
 
@@ -1817,24 +1930,24 @@
       const lines = [];
       lines.push('KONFIGURACJA WAGO');
       lines.push('');
-      lines.push(`Baza: 750-8001 + 750-600 — ${formatPLN(BASE_SET_PRICE)}`);
+      lines.push(`Baza: 750-8001 + 750-600 — ${formatPrice(BASE_SET_PRICE)}`);
       lines.push('');
 
       lines.push('Koszyk obowiązkowy (-50%):');
       b1Lines.forEach(l => {
-        lines.push(`  ${l.catalog} ×${l.qty} — ${formatPLN(l.lineTotal)}`);
+        lines.push(`  ${l.catalog} ×${l.qty} — ${formatPrice(l.lineTotal)}`);
       });
 
       if (b2Lines.length > 0) {
         lines.push('');
         lines.push('Koszyk opcjonalny (-25%):');
         b2Lines.forEach(l => {
-          lines.push(`  ${l.catalog} ×${l.qty} — ${formatPLN(l.lineTotal)}`);
+          lines.push(`  ${l.catalog} ×${l.qty} — ${formatPrice(l.lineTotal)}`);
         });
       }
 
       lines.push('');
-      lines.push(`WARTOŚĆ CAŁKOWITA: ${formatPLN(grandTotal)}`);
+      lines.push(`WARTOŚĆ CAŁKOWITA: ${formatPrice(grandTotal)}`);
 
       return lines.join('\n');
     }
@@ -2026,6 +2139,11 @@
        INIT
     ========================================================= */
     document.addEventListener('DOMContentLoaded', () => {
+      applyStaticI18n();
+      // Kwota zestawu bazowego w statycznym HTML — jedno źródło: BASE_SET_PRICE.
+      document.querySelectorAll('[data-base-price]').forEach(el => {
+        el.textContent = formatPrice(BASE_SET_PRICE);
+      });
       initState();
       renderGroupedCards(BASKET1_ITEMS, 'basket1', 'basket1-modules', '−50%');
       renderModuleCards(BASKET2_ITEMS, 'basket2', 'basket2-modules', '−25%');
