@@ -12,6 +12,15 @@
   <!-- Skrypt embedu HubSpot NIE jest ładowany tutaj — celowo. Ładuje go dopiero
        initHubspotForm() przy wejściu na krok 3 (lazy-load), żeby żaden zasób ani
        tracking/cookie HubSpot nie startował na krokach 1–2 bez interakcji usera. -->
+  <!-- Cloudflare Web Analytics — beacon NIE jest wstawiany tutaj ręcznie.
+       Projekt żyje na Cloudflare Pages, gdzie analityka włącza się w panelu
+       (Workers & Pages → projekt → Metrics → Web Analytics → Enable), a CF sam
+       wstrzykuje snippet z tokenem przy każdym deployu. Ręczny tag = drugi beacon
+       i podwójne liczenie odsłon.
+       Beacon jest cookieless (w odróżnieniu od HubSpota powyżej), więc może startować
+       od razu. CF WA nie ma custom events, ale beacon nadpisuje history.pushState
+       i raportuje każdą zmianę trasy jako odsłonę — stąd lejek robimy wirtualnymi
+       ścieżkami /krok-N ustawianymi w trackStep(). Widok: wymiar Path w dashboardzie. -->
   <style>
     /* =========================================================
        CSS CUSTOM PROPERTIES
@@ -2253,6 +2262,29 @@
     /* =========================================================
        NAVIGATION
     ========================================================= */
+    /* Lejek Cloudflare Web Analytics — wirtualne ścieżki /krok-N.
+       CF WA nie ma custom events, ale beacon nadpisuje history.pushState i raportuje
+       każdą zmianę trasy jako odsłonę. Każdy krok liczony max raz na sesję, żeby
+       powroty (Wstecz / btn-back) nie zawyżały lejka. */
+    const trackedSteps = new Set();
+
+    function trackStep(n) {
+      if (trackedSteps.has(n)) return;
+      trackedSteps.add(n);
+      try {
+        // Baza: obetnij poprzednie /krok-N oraz nazwę pliku (Live Server: /index.html)
+        let base = location.pathname
+          .replace(/\/(krok-\d+)?$/, '/')
+          .replace(/[^\/]*\.html?$/i, '');
+        if (!base.endsWith('/')) base += '/';
+        // location.search zachowany — ?lang= musi przetrwać odświeżenie strony
+        history.pushState({ step: n }, '', base + 'krok-' + n + location.search);
+      } catch (e) {
+        /* pushState może rzucić w restrykcyjnym sandboxie iframe —
+           analityka nigdy nie może wywrócić konfiguratora */
+      }
+    }
+
     function goToStep(n) {
       // Hide all panels
       [1, 2, 3].forEach(i => {
@@ -2273,6 +2305,9 @@
       });
 
       state.currentStep = n;
+
+      // Analityka: raportuj dopiero faktycznie wykonane przejście
+      trackStep(n);
 
       // Step-specific actions
       if (n === 3) {
@@ -2355,6 +2390,14 @@
       document.getElementById('btn-back-2').addEventListener('click', () => goToStep(1));
       document.getElementById('btn-next-2').addEventListener('click', () => goToStep(3));
       document.getElementById('btn-back-3').addEventListener('click', () => goToStep(2));
+
+      // Przycisk Wstecz przeglądarki — trackStep() używa pushState, więc bez tego
+      // URL rozjechałby się ze stanem aplikacji. trackStep() deduplikuje przez
+      // trackedSteps, więc powrót na krok NIE dodaje kolejnej odsłony do lejka.
+      window.addEventListener('popstate', (e) => {
+        const n = (e.state && e.state.step) || 1;
+        if (n !== state.currentStep) goToStep(n);
+      });
     }
 
     /* =========================================================
