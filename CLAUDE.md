@@ -23,9 +23,11 @@ Do testowania iframe otwórz `test-iframe.html` przez Live Server na osobnym por
 
 Push do `main` → Cloudflare Pages deployuje automatycznie. Plik `_headers` konfiguruje nagłówki HTTP — zmiany w nim wymagają wdrożenia żeby zadziałały (lokalnie ignorowany).
 
+Cloudflare Pages wstrzykuje też beacon Web Analytics przy deployu, jeśli analityka jest włączona w panelu projektu (patrz sekcja Analityka).
+
 ## Architektura
 
-Cała aplikacja żyje w `index.html` (~56 KB) — CSS i JS wbudowane w plik. Zero zależności npm, zero etapu budowania.
+Cała aplikacja żyje w `index.html` (~95 KB) — CSS i JS wbudowane w plik. Zero zależności npm, zero etapu budowania.
 
 ### Przepływ aplikacji (3 kroki)
 
@@ -62,7 +64,8 @@ Dane produktów są hardcoded w `BASKET1_ITEMS` i `BASKET2_ITEMS` (tablice obiek
 | `renderLiveSummary()` | Update sidebar i mobile bar |
 | `computeSummary()` | Kalkulacja linii podsumowania i sum |
 | `fillHubspotFields()` | Wypełnia ukryte pola HubSpot przed submitem |
-| `goToStep(n)` | Nawigacja między krokami (hide/show + focus) |
+| `goToStep(n)` | Nawigacja między krokami (hide/show + focus) — **jedyny punkt przejść**, tu wpięta analityka |
+| `trackStep(n)` | Analityka lejka: `pushState` na `/krok-N`, dedup przez `trackedSteps` (patrz sekcja Analityka) |
 
 ## Wielojęzyczność (PL / LT / LV)
 
@@ -109,6 +112,50 @@ Detekcja języka (stała `LANG`, początek `<script>`): `?lang=` → fallback z 
 CSS variables w `:root` — przy zmianach kolorystyki lub layoutu zacznij od nich. Kluczowe: `--wago-green: #6ec800`, `--wago-dark: #1f2837`, `--header-h: 60px`.
 
 Kafelki modułów używają klasy `.module-card--selected` (zielone tło + lewa linia) do wizualnego oznaczenia wybranych pozycji.
+
+## Analityka — lejek kroków (Cloudflare Web Analytics)
+
+Mierzy, do którego etapu docierają klienci. Cookieless, bez identyfikatorów użytkownika — brak podstaw do bannera zgody w iframe.
+
+### Dlaczego wirtualne ścieżki, a nie zdarzenia
+
+**Cloudflare Web Analytics nie ma custom events** (dokumentacja: *"Not yet, but we may add support for this in the future"*). Ale beacon nadpisuje `history.pushState` i raportuje każdą zmianę trasy jako odsłonę — dlatego lejek jest realizowany **wirtualnymi ścieżkami URL**, nie zdarzeniami. **Routing hashowy (`#krok-2`) nie jest wspierany** — muszą być prawdziwe ścieżki.
+
+### Mechanizm
+
+- `trackStep(n)` — `pushState` na `/krok-N`; wołane z `goToStep()` (jedyny punkt przejść między krokami, więc jeden hook wystarcza)
+- **Dedup przez `trackedSteps` (Set)** — każdy krok liczony max raz na sesję, żeby powroty (Wstecz / `btn-back-*`) nie zawyżały lejka
+- Całość w `try/catch` — `pushState` może rzucić w restrykcyjnym sandboxie iframe, a **analityka nigdy nie może wywrócić konfiguratora**
+- Listener `popstate` — bez niego przeglądarkowy Wstecz rozjechałby URL ze stanem aplikacji
+- Budowanie ścieżki obcina poprzednie `/krok-N` **oraz nazwę pliku** (`/index.html` przy Live Server) i zachowuje `location.search`, żeby `?lang=` przetrwał odświeżenie
+
+### Beacon: włączany w panelu, NIE w kodzie
+
+Projekt jest na **Cloudflare Pages**, gdzie analitykę włącza się w dashboardzie:
+
+> Workers & Pages → projekt → **Metrics** → **Web Analytics** → **Enable**
+
+CF sam wstrzykuje snippet z tokenem **przy następnym deployu**. Dlatego w `index.html` jest tylko komentarz wyjaśniający — **nie dodawaj ręcznie tagu `<script>` beacona**: byłyby dwa beacony i **podwójne liczenie odsłon**. (To dlatego ekran "Manage site" w Web Analytics pokazuje *"Manage this site using Cloudflare Pages"* i nie udostępnia tokenu.)
+
+Tryb SPA jest domyślnie włączony — **nie ustawiaj `"spa": false`**.
+
+### Jak odczytać wynik
+
+Dashboard → Web Analytics → wybierz stronę → wymiar **`Path`**, metryka **Page views**:
+
+```
+/              ← wejścia
+/krok-2        ← przeszli do koszyka opcjonalnego
+/krok-3        ← dotarli do formularza
+```
+
+**Używaj Page views, nie Visits.** CF definiuje *Visits* jako odsłony z refererem spoza hosta — konfigurator zawsze działa w iframe na wago.com, więc referer jest zawsze zewnętrzny i te metryki dałyby mylące procenty.
+
+### Ograniczenia (świadome)
+
+- **To nie jest raport lejkowy** — CF nie ma widoku "funnel" i nie łączy kroków w sesje. Dostajesz trzy niezależne liczby, procenty liczysz sam. Prawdziwy lejek z sesjami wymagałby Plausible / Analytics Engine.
+- **Mierzy dojście do formularza, nie jego wysłanie.** Submit HubSpota jest nieobserwowalny — `hbspt.forms.create` ma tylko `onFormReady`, bez `onFormSubmitted`. Liczbę wysłanych formularzy zestawiaj ręcznie z HubSpota. Domknięcie lejka = dodanie `onFormSubmitted` w `initHubspotForm()`.
+- **Rozbicie na rynki przez `?lang=` nie zadziała** — `Query string` NIE jest wymiarem CF WA (jest tylko `Path`). Gdy ruszą LT/LV i będzie potrzebny lejek per rynek, trzeba wpisać język w ścieżkę (`/lt/krok-2`).
 
 ## Integracja HubSpot
 
