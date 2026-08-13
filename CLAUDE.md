@@ -113,6 +113,16 @@ CSS variables w `:root` — przy zmianach kolorystyki lub layoutu zacznij od nic
 
 Kafelki modułów używają klasy `.module-card--selected` (zielone tło + lewa linia) do wizualnego oznaczenia wybranych pozycji.
 
+### Zapowiedź koszyka 2 (`.next-step-teaser`)
+
+Box nad przyciskiem „Dalej" w kroku 1 (między `#validation-msg-1` a `.step-actions`) informujący, że w kolejnym kroku czekają moduły I/O — chipy `DI / DO / AI / AO / RTD` w stylu `.badge--discount-light` + linia opisu. Powstał, bo lejek analityczny pokazywał słabe przejścia `/` → `/krok-2`: klienci nie wiedzieli, że koszyk 2 zawiera kolejne moduły.
+
+Zawsze widoczny, niezależny od stanu walidacji (nie dotyka `#validation-msg-1`, którego `className` jest w całości nadpisywany przez `updateNextButton1()`).
+
+Treść jest **statyczna, w `I18N` (klucze `teaser.*`)** — celowo nie generowana z `BASKET2_ITEMS`: `ITEMS2` jest filtrowane przez `itemPrice()`, więc dla LT/LV (puste `PRICES_EUR`) lista wyszłaby pusta; poza tym skróty DI/DO/AI/AO/RTD nie istnieją jako pole w danych, siedzą tylko w wolnym tekście `desc`. Skróty są międzynarodowe i w LT/LV zostają bez zmian — tłumaczone są tylko `teaser.title` i `teaser.note`.
+
+Atrybuty `data-i18n` wiszą **wyłącznie na liściach tekstowych** (tytuł, chipy, opis), nigdy na wrapperze — `applyStaticI18n()` nadpisuje `textContent`, więc klucz na `<div>` skasowałby SVG strzałki i wszystkie chipy.
+
 ## Analityka — lejek kroków (Cloudflare Web Analytics)
 
 Mierzy, do którego etapu docierają klienci. Cookieless, bez identyfikatorów użytkownika — brak podstaw do bannera zgody w iframe.

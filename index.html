@@ -626,6 +626,55 @@
     }
 
     /* =========================================================
+       NEXT STEP TEASER (zapowiedź koszyka 2 nad przyciskiem "Dalej")
+
+       Treść jest STATYCZNA (I18N), celowo nie generowana z BASKET2_ITEMS:
+       ITEMS2 jest filtrowane przez itemPrice(), więc dla LT/LV (puste
+       PRICES_EUR) lista wyszłaby pusta. Skróty DI/DO/AI/AO/RTD i tak nie
+       istnieją jako pole w danych — siedzą tylko w wolnym tekście desc.
+    ========================================================= */
+    .next-step-teaser {
+      background: #f4fbea;
+      border: 1px solid var(--wago-green);
+      border-left: 4px solid var(--wago-green);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 4px;
+    }
+
+    .next-step-teaser__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .next-step-teaser__arrow {
+      flex-shrink: 0;
+      color: var(--wago-green);
+    }
+
+    .next-step-teaser__title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--wago-dark);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .next-step-teaser__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0 8px;
+    }
+
+    .next-step-teaser__note {
+      font-size: 0.8125rem;
+      color: #3a6b00;
+      line-height: 1.45;
+    }
+
+    /* =========================================================
        STEP ACTIONS
     ========================================================= */
     .step-actions {
@@ -1069,6 +1118,18 @@
         padding: 10px;
       }
 
+      .next-step-teaser {
+        padding: 12px;
+      }
+
+      .next-step-teaser__title {
+        font-size: 0.875rem;
+      }
+
+      .next-step-teaser__note {
+        font-size: 0.75rem;
+      }
+
       .summary-table-wrap {
         padding: 16px;
       }
@@ -1140,6 +1201,25 @@
             <div id="basket1-modules" class="module-grid" role="list" aria-label="Moduły koszyka obowiązkowego" data-i18n-aria="step1.modulesAria"></div>
 
             <div id="validation-msg-1" class="validation-msg" role="alert" aria-live="assertive"></div>
+
+            <!-- Zapowiedź koszyka 2 — zawsze widoczna, niezależna od walidacji.
+                 data-i18n TYLKO na liściach tekstowych: applyStaticI18n() nadpisuje
+                 textContent, więc klucz na wrapperze skasowałby SVG i chipy. -->
+            <div class="next-step-teaser">
+              <div class="next-step-teaser__head">
+                <svg class="next-step-teaser__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="next-step-teaser__title" data-i18n="teaser.title">W kolejnym kroku: moduły I/O</span>
+                <span class="badge badge--discount">−25%</span>
+              </div>
+              <div class="next-step-teaser__chips">
+                <span class="badge badge--discount-light" data-i18n="teaser.chipDi">DI</span>
+                <span class="badge badge--discount-light" data-i18n="teaser.chipDo">DO</span>
+                <span class="badge badge--discount-light" data-i18n="teaser.chipAi">AI</span>
+                <span class="badge badge--discount-light" data-i18n="teaser.chipAo">AO</span>
+                <span class="badge badge--discount-light" data-i18n="teaser.chipRtd">RTD</span>
+              </div>
+              <p class="next-step-teaser__note" data-i18n="teaser.note">Wejścia i wyjścia dwustanowe i analogowe oraz pomiar temperatury RTD — dodasz je opcjonalnie, z rabatem −25%.</p>
+            </div>
 
             <div class="step-actions step-actions--single">
               <button id="btn-next-1" class="btn btn--primary" disabled aria-disabled="true">
@@ -1307,6 +1387,13 @@
         'step2.modulesAria': 'Moduły koszyka opcjonalnego',
         'step3.title': 'Podsumowanie oferty',
         'step3.desc': 'Sprawdź konfigurację i wypełnij formularz kontaktowy.',
+        'teaser.title': 'W kolejnym kroku: moduły I/O',
+        'teaser.chipDi': 'DI',
+        'teaser.chipDo': 'DO',
+        'teaser.chipAi': 'AI',
+        'teaser.chipAo': 'AO',
+        'teaser.chipRtd': 'RTD',
+        'teaser.note': 'Wejścia i wyjścia dwustanowe i analogowe oraz pomiar temperatury RTD — dodasz je opcjonalnie, z rabatem −25%.',
         'btn.next': 'Dalej',
         'btn.back': 'Wróć',
         'sidebar.aria': 'Podsumowanie na żywo',
@@ -1360,6 +1447,13 @@
         'step2.modulesAria': 'Pasirenkamo krepšelio moduliai',
         'step3.title': 'Pasiūlymo santrauka',
         'step3.desc': 'Patikrinkite konfigūraciją ir užpildykite kontaktinę formą.',
+        'teaser.title': 'Kitame žingsnyje: I/O moduliai',
+        'teaser.chipDi': 'DI',
+        'teaser.chipDo': 'DO',
+        'teaser.chipAi': 'AI',
+        'teaser.chipAo': 'AO',
+        'teaser.chipRtd': 'RTD',
+        'teaser.note': 'Skaitmeniniai ir analoginiai įėjimai bei išėjimai, taip pat temperatūros matavimas RTD — pasirinktinai, su −25% nuolaida.',
         'btn.next': 'Toliau',
         'btn.back': 'Atgal',
         'sidebar.aria': 'Santrauka realiuoju laiku',
@@ -1411,6 +1505,13 @@
         'step2.modulesAria': 'Izvēles groza moduļi',
         'step3.title': 'Piedāvājuma kopsavilkums',
         'step3.desc': 'Pārbaudiet konfigurāciju un aizpildiet kontaktformu.',
+        'teaser.title': 'Nākamajā solī: I/O moduļi',
+        'teaser.chipDi': 'DI',
+        'teaser.chipDo': 'DO',
+        'teaser.chipAi': 'AI',
+        'teaser.chipAo': 'AO',
+        'teaser.chipRtd': 'RTD',
+        'teaser.note': 'Diskrētās un analogās ieejas un izejas, kā arī temperatūras mērīšana ar RTD — pievienojiet pēc izvēles ar −25% atlaidi.',
         'btn.next': 'Tālāk',
         'btn.back': 'Atpakaļ',
         'sidebar.aria': 'Kopsavilkums reāllaikā',
